@@ -1,7 +1,7 @@
 "use client"
 
-import CommunityEvents from "../community-events"
+import SignUp from "../sign-up"
 
 export default function SyntheticV0PageForDeployment() {
-  return <CommunityEvents />
+  return <SignUp />
 }

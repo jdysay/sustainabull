@@ -1,0 +1,10 @@
+@font-face {
+  font-family: "PixelFont";
+  src: url("/pixel-font.woff2") format("woff2");
+}
+
+.font-pixel {
+  font-family: "PixelFont", system-ui, sans-serif;
+  letter-spacing: 0.05em;
+}
+

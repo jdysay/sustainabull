@@ -16,7 +16,6 @@ function App() {
 
       <div className="flex-grow-[1]"></div>
 
-      {/* Clouds at the bottom side by side */}
       <div className="flex justify-center space-x-0 pb-4">
         <img
             src={Cloud1Image}

@@ -5,7 +5,7 @@ import Cloud2Image from "/src/assets/images/cloud2.png";
 import TopCloudImage1 from "/src/assets/images/top-cloud1.png";
 import TopCloudImage2 from "/src/assets/images/top-cloud2.png";
 
-function LoginPage() {
+function SignUpPage() {
     const navigate = useNavigate();
 
     return (
@@ -18,33 +18,42 @@ function LoginPage() {
 
             {/* White Login Box */}
             <div className="w-[300px] bg-white p-6 rounded-lg shadow-lg flex flex-col items-center z-30">
-                <h1 className="text-4xl font-bold mb-4">Login</h1>
+                <h1 className="text-4xl font-bold mb-4">Sign Up</h1>
                 <input
                     type="text"
-                    placeholder="Username"
+                    placeholder="First Name"
+                    className="bg-transparent text-custom-blue-dark border-b-2 border-custom-grey focus:border-custom-blue focus:outline-none p-2 w-64 mb-4"
+                />
+                <input
+                    type="text"
+                    placeholder="Last Name"
+                    className="bg-transparent text-custom-blue-dark border-b-2 border-custom-grey focus:border-custom-blue focus:outline-none p-2 w-64 mb-4"
+                />
+                <input
+                    type="email"
+                    placeholder="Email"
                     className="bg-transparent text-custom-blue-dark border-b-2 border-custom-grey focus:border-custom-blue focus:outline-none p-2 w-64 mb-4"
                 />
                 <input
                     type="password"
                     placeholder="Password"
-                    className="bg-transparent text-custom-blue-dark border-b-2 border-custom-grey focus:border-custom-blue focus:outline-none p-2 w-64 mt-4 mb-1"
+                    className="bg-transparent text-custom-blue-dark border-b-2 border-custom-grey focus:border-custom-blue-dark focus:outline-none p-2 w-64 mt-4 mb-1"
                 />
-               <button
-                className="bg-transparent text-custom-grey w-full text-left text-sm px-2 py-1 hover:text-custom-blue border-none">forget password?
-                </button>
-            
+                <input
+                    type="password"
+                    placeholder="Confirm Password"
+                    className="bg-transparent text-custom-blue-dark border-b-2 border-custom-grey focus:border-custom-blue-dark focus:outline-none p-2 w-64 mt-4 mb-1"
+                />
                 <button
                     className="bg-custom-blue-light text-white px-4 py-2 rounded w-64 mt-2 hover:bg-custom-blue border-none"
                     onClick={() => navigate("/home")}
                 >
-                    Login
+                    Sign Up
                 </button>
                 <div className="flex items-center space-x-1 w-full">
-                <p className="text-custom-grey text-sm">Are you new here?</p>
-                <button className="bg-transparent text-custom-blue text-sm hover:text-custom-blue-dark border-none"
-                onClick={() => navigate("/signup")}
-                >
-                    Sign up
+                <p className="text-custom-grey text-sm">Already have an account?</p>
+                <button className="bg-transparent text-custom-blue text-sm hover:text-custom-blue border-none">
+                    Login
                 </button>
                 </div>
             </div>
@@ -61,4 +70,4 @@ function LoginPage() {
     );
 }
 
-export default LoginPage;
+export default SignUpPage;

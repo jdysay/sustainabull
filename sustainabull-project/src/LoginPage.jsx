@@ -27,16 +27,24 @@ function LoginPage() {
                 <input
                     type="password"
                     placeholder="Password"
-                    className="bg-transparent text-custom-blue-dark border-b-2 border-custom-grey focus:border-custom-blue-dark focus:outline-none p-2 w-64 mt-4 mb-4"
+                    className="bg-transparent text-custom-blue-dark border-b-2 border-custom-grey focus:border-custom-blue-dark focus:outline-none p-2 w-64 mt-4 mb-1"
                 />
-               
+               <button
+                className="bg-transparent text-custom-grey w-full text-left text-sm px-2 py-1 hover:text-custom-blue border-none">forget password?
+                </button>
             
                 <button
-                    className="bg-custom-blue-light text-white px-4 py-2 rounded w-64 mt-4 hover:bg-custom-blue"
+                    className="bg-custom-blue-light text-white px-4 py-2 rounded w-64 mt-2 hover:bg-custom-blue border-none"
                     onClick={() => navigate("/home")}
                 >
                     Login
                 </button>
+                <div className="flex items-center space-x-1 w-full">
+                <p className="text-custom-grey text-sm">Are you new here?</p>
+                <button className="bg-transparent text-custom-blue text-sm hover:text-custom-blue-dark border-none">
+                    Sign up
+                </button>
+                </div>
             </div>
 
             {/* Bottom Clouds */}
@@ -44,6 +52,9 @@ function LoginPage() {
                 <img src={Cloud1Image} alt="Cloud" className="w-64 h-auto absolute left-0 z-10" />
                 <img src={Cloud2Image} alt="Cloud" className="w-64 h-auto absolute right-0 z-20" />
             </div>
+
+            
+
         </div>
     );
 }

@@ -1,9 +1,9 @@
 import './App.css'; 
 import { useNavigate } from "react-router-dom";
 import CowImage from "/src/assets/images/cow.png";
-import TitleImage from "/src/assets/images/title.png"
-import Cloud1Image from "/src/assets/images/cloud1.png"
-import Cloud2Image from "/src/assets/images/cloud2.png"
+import TitleImage from "/src/assets/images/title.png";
+import Cloud1Image from "/src/assets/images/cloud1.png";
+import Cloud2Image from "/src/assets/images/cloud2.png";
 
 function HomePage() {
     const navigate = useNavigate();

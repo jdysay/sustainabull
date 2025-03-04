@@ -9,7 +9,7 @@ function SignUpPage() {
     const navigate = useNavigate();
 
     return (
-        <div className="min-h-screen w-full flex flex-col items-center justify-center bg-custom-blue-light relative">
+        <div className="min-h-screen w-[400px] flex flex-col items-center justify-center bg-custom-blue-light relative">
             {/* Top Clouds */}
             <div className="absolute top-0 left-0 w-full flex justify-center">
                 <img src={TopCloudImage1} alt="Cloud" className="w-64 h-auto absolute left-0 z-10" />
@@ -46,13 +46,14 @@ function SignUpPage() {
                 />
                 <button
                     className="bg-custom-blue-light text-white px-4 py-2 rounded w-64 mt-2 hover:bg-custom-blue border-none"
-                    onClick={() => navigate("/home")}
+                    onClick={() => navigate("/loading")}
                 >
                     Sign Up
                 </button>
                 <div className="flex items-center space-x-1 w-full">
                 <p className="text-custom-grey text-sm">Already have an account?</p>
-                <button className="bg-transparent text-custom-blue text-sm hover:text-custom-blue border-none">
+                <button className="bg-transparent text-custom-blue text-sm hover:text-custom-blue-light border-none"
+                 onClick={() => navigate("/login")}>
                     Login
                 </button>
                 </div>

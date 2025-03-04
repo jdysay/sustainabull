@@ -41,7 +41,7 @@ function LoginPage() {
                 </button>
                 <div className="flex items-center space-x-1 w-full">
                 <p className="text-custom-grey text-sm">Are you new here?</p>
-                <button className="bg-transparent text-custom-blue text-sm hover:text-custom-blue-dark border-none">
+                <button className="bg-transparent text-custom-blue text-sm hover:text-custom-blue border-none">
                     Sign up
                 </button>
                 </div>

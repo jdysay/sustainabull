@@ -5,6 +5,26 @@ import Cloud2Image from "/src/assets/images/cloud2.png";
 import TopCloudImage1 from "/src/assets/images/top-cloud1.png";
 import TopCloudImage2 from "/src/assets/images/top-cloud2.png";
 
+const handleLogin = async (event) => {
+    event.preventDefault();
+
+    try {
+        const response = await axios.post('http://localhost:8008/api/accounts/login/', {
+        username: username, //replace with your state variables
+        password: password, //replace with your state variables
+      });
+
+      console.log('Login successful:', response.data);
+      const token = response.data.token;
+      //store the token
+      //redirect to another page
+    } catch (error) {
+      console.error('Login error:', error);
+      // Handle errors
+    }
+  };
+
+
 function LoginPage() {
     const navigate = useNavigate();
 

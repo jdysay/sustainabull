@@ -4,6 +4,28 @@ import Cloud1Image from "/src/assets/images/cloud1.png";
 import Cloud2Image from "/src/assets/images/cloud2.png";
 import TopCloudImage1 from "/src/assets/images/top-cloud1.png";
 import TopCloudImage2 from "/src/assets/images/top-cloud2.png";
+import axios from 'axios';
+
+const handleSignup = async (event) => {
+    event.preventDefault(); // Prevent default form submission
+  
+    try {
+      const response = await axios.post('http://localhost:8008/api/accounts/register/', {
+        first_name: firstName, //replace with your state variables
+        last_name: lastName, //replace with your state variables
+        email: email, //replace with your state variables
+        username: username, //replace with your state variables
+        password: password, //replace with your state variables
+        password_confirmation: confirmPassword, //replace with your state variables
+      });
+  
+      console.log('Signup successful:', response.data);
+      // Redirect to login or other page on success
+    } catch (error) {
+      console.error('Signup error:', error);
+      // Handle errors (e.g., display error messages)
+    }
+  };
 
 function SignUpPage() {
     const navigate = useNavigate();

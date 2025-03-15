@@ -1,6 +1,8 @@
 sustainabull/           (The root directory of your project)
 ├── .gitignore           (Git ignore file)
-├── sustainabull-project/  (Frontend)
+├── docker-compose.yml   (Docker Compose file)
+├── sustainabull-project/  (React Frontend)
+│   ├── Dockerfile       (Frontend Dockerfile)
 │   ├── public/
 │   │   └── ...
 │   ├── src/
@@ -13,8 +15,8 @@ sustainabull/           (The root directory of your project)
 │   ├── package-lock.json
 │   ├── index.html
 │   └── ...
-├── features/              (Helper folders for backend)
-│   ├── accounts/      (accounts manager)
+├── features/              (Django Apps)
+│   ├── accounts/      (Your accounts Django app)
 │   │   ├── migrations/
 │   │   │   └── __init__.py
 │   │   ├── __init__.py
@@ -39,7 +41,8 @@ sustainabull/           (The root directory of your project)
 │       ├── views.py
 │       ├── serializers.py
 │       └── urls.py
-├── sustainabull_backend/ (Backend)
+├── sustainabull_backend/ (Django Backend)
+│   ├── Dockerfile       (Backend Dockerfile)
 │   ├── sustainabull_backend/ (The main folder of your backend project)
 │   │   ├── __init__.py
 │   │   ├── settings.py (Django settings)

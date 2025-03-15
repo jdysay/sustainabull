@@ -1,0 +1,37 @@
+version: "3.8"
+services:
+  frontend:
+    build:
+      context: ./sustainabull-project
+      dockerfile: Dockerfile # correct path
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+
+  backend:
+    build:
+      context: ./sustainabull_backend # correct path
+      dockerfile: Dockerfile # correct path
+    environment:
+      - POSTGRES_HOST=db
+      - POSTGRES_USER=myuser
+      - POSTGRES_PASSWORD=mypassword
+    ports:
+      - "8000:8008" #correct port
+    depends_on:
+      - db
+
+  db:
+    image: postgres:latest
+    environment:
+      - POSTGRES_USER=myuser
+      - POSTGRES_PASSWORD=mypassword
+      - POSTGRES_DB=mydb # Your database name
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data # Persist data
+
+volumes:
+  postgres_data:

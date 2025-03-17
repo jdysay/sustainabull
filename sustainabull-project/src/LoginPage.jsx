@@ -1,5 +1,7 @@
+import React, { useState } from 'react';
 import { useNavigate } from "react-router-dom";
-import './App.css'; 
+import axios from 'axios'; // Import axios
+import './App.css';
 import Cloud1Image from "/src/assets/images/cloud1.png";
 import Cloud2Image from "/src/assets/images/cloud2.png";
 import TopCloudImage1 from "/src/assets/images/top-cloud1.png";
@@ -7,6 +9,28 @@ import TopCloudImage2 from "/src/assets/images/top-cloud2.png";
 
 function LoginPage() {
     const navigate = useNavigate();
+    const [username, setUsername] = useState(''); // State for username
+    const [password, setPassword] = useState(''); // State for password
+
+    const handleLogin = async (event) => {
+        event.preventDefault(); // Prevent page refresh
+
+        try {
+            const response = await axios.post('http://localhost:8000/api/accounts/login/', { // Correct URL
+                username: username,
+                password: password,
+            });
+
+            console.log('Login successful:', response.data);
+            const token = response.data.token;
+            // Store the token (e.g., in local storage)
+            // Redirect to another page (e.g., the loading page)
+            navigate("/loading");
+        } catch (error) {
+            console.error('Login error:', error);
+            // Handle errors (e.g., display an error message to the user)
+        }
+    };
 
     return (
         <div className="min-h-screen w-[400px] flex flex-col items-center justify-center bg-custom-blue-light relative">
@@ -19,33 +43,39 @@ function LoginPage() {
             {/* White Login Box */}
             <div className="w-[300px] bg-white p-6 rounded-lg shadow-lg flex flex-col items-center z-30">
                 <h1 className="text-4xl font-bold mb-4">Login</h1>
-                <input
-                    type="text"
-                    placeholder="Username"
-                    className="bg-transparent text-custom-blue-dark border-b-2 border-custom-grey focus:border-custom-blue focus:outline-none p-2 w-64 mb-4"
-                />
-                <input
-                    type="password"
-                    placeholder="Password"
-                    className="bg-transparent text-custom-blue-dark border-b-2 border-custom-grey focus:border-custom-blue focus:outline-none p-2 w-64 mt-4 mb-1"
-                />
-               <button
-                className="bg-transparent text-custom-grey w-full text-left text-sm px-2 py-1 hover:text-custom-blue border-none">forget password?
-                </button>
-            
-                <button
-                    className="bg-custom-blue-light text-white px-4 py-2 rounded w-64 mt-2 hover:bg-custom-blue border-none"
-                    onClick={() => navigate("/loading")}
-                >
-                    Login
-                </button>
+                <form onSubmit={handleLogin} className="flex flex-col items-center"> {/* Add onSubmit */}
+                    <input
+                        type="text"
+                        placeholder="Username"
+                        className="bg-transparent text-custom-blue-dark border-b-2 border-custom-grey focus:border-custom-blue focus:outline-none p-2 w-64 mb-4"
+                        value={username} // Connect to state
+                        onChange={(e) => setUsername(e.target.value)} // Update state
+                    />
+                    <input
+                        type="password"
+                        placeholder="Password"
+                        className="bg-transparent text-custom-blue-dark border-b-2 border-custom-grey focus:border-custom-blue focus:outline-none p-2 w-64 mt-4 mb-1"
+                        value={password} // Connect to state
+                        onChange={(e) => setPassword(e.target.value)} // Update state
+                    />
+                    <button
+                        className="bg-transparent text-custom-grey w-full text-left text-sm px-2 py-1 hover:text-custom-blue border-none">forget password?
+                    </button>
+
+                    <button
+                        type="submit" // Make it a submit button
+                        className="bg-custom-blue-light text-white px-4 py-2 rounded w-64 mt-2 hover:bg-custom-blue border-none"
+                    >
+                        Login
+                    </button>
+                </form>
                 <div className="flex items-center space-x-1 w-full">
-                <p className="text-custom-grey text-sm">Are you new here?</p>
-                <button className="bg-transparent text-custom-blue text-sm hover:text-custom-blue-light border-none"
-                onClick={() => navigate("/signup")}
-                >
-                    Sign up
-                </button>
+                    <p className="text-custom-grey text-sm">Are you new here?</p>
+                    <button className="bg-transparent text-custom-blue text-sm hover:text-custom-blue-light border-none"
+                        onClick={() => navigate("/signup")}
+                    >
+                        Sign up
+                    </button>
                 </div>
             </div>
 

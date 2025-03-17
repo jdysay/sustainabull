@@ -28,6 +28,7 @@
 
     *   This command runs the `migrate` command inside the `backend` container. It will create the necessary database tables in PostgreSQL.
 
+# Skip unless you newly run "pip install *" or "npm install *" --------------------------------------------------
 4. **Rebuild if needed**:
     * If there are changes in `requirements.txt` or `package.json`, you will need to rebuild the images.
     ```
@@ -38,6 +39,7 @@
     ```
     docker-compose up -d
     ```
+# ---------------------------------------------------------------------------------------------------------------
 
 6. **Access the Application:**
 

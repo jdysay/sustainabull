@@ -1,0 +1,52 @@
+Project folder: sustainabull/ 
+Frontend: sustainabull-project/
+Backend: sustainabull_backend/
+
+-----------------------------------------------------------------------------------
+[Details]
+
+sustainabull/              (Root directory of the project)
+├── .gitignore             (Root .gitignore file)
+├── docker-compose.yml     (Docker Compose configuration)
+├── README.md              (Main project README)
+├── sustainabull-project/  (Frontend - React application)
+│   ├── .gitignore         (Frontend .gitignore file)
+│   ├── index.html         (Main HTML file)
+│   ├── package.json       (Frontend dependencies)
+│   ├── package-lock.json  (Frontend dependency versions)
+│   ├── public/            (Public assets)
+│   │   └── favicon.ico
+│   ├── src/               (Frontend source code)
+│   │   ├── App.css
+│   │   ├── App.jsx
+│   │   ├── assets/
+│   │   ├── components/
+│   │   │   ├── LoginPage.jsx
+│   │   │   └── SignUpPage.jsx
+│   │   ├── index.css
+│   │   └── main.jsx
+│   ├── vite.config.js     (Vite configuration)
+│   ├── Dockerfile         (Frontend Dockerfile)
+│   └── README.md          (Frontend README - default from Vite)
+└── sustainabull_backend/ (Backend - Django application)
+    ├── .gitignore         (Backend .gitignore file)
+    ├── accounts/          (Django app for user accounts)
+    │   ├── migrations/    (Django migrations)
+    │   │   ├── __init__.py
+    │   │   └── ...
+    │   ├── admin.py
+    │   ├── apps.py
+    │   ├── models.py
+    │   ├── serializers.py
+    │   ├── tests.py
+    │   ├── urls.py
+    │   └── views.py
+    ├── manage.py          (Django management script)
+    ├── requirements.txt   (Backend dependencies)
+    ├── sustainabull_backend/ (Django project settings)
+    │   ├── __init__.py
+    │   ├── asgi.py
+    │   ├── settings.py
+    │   ├── urls.py
+    │   └── wsgi.py
+    └── Dockerfile         (Backend Dockerfile)

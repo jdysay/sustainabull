@@ -13,8 +13,7 @@ SECRET_KEY = 'django-insecure-tw%u^sdygu7pg3^yjlufh($%belp_13xsj34_w^ev!&1w30v8#
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = ['*']  # For development only
 
 # Application definition
 
@@ -25,20 +24,27 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'corsheaders',
     'rest_framework',
     'rest_framework.authtoken',
-    'apps.accounts'
+    'accounts',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:5173',  # Allow your frontend's development server
+]
+CORS_ALLOW_ALL_ORIGINS = True  # For development only
 
 ROOT_URLCONF = 'sustainabull_backend.urls'
 
@@ -113,4 +119,4 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-AUTH_USER_MODEL = 'apps.accounts.User'
+AUTH_USER_MODEL = 'accounts.User'

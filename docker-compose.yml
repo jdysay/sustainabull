@@ -27,6 +27,7 @@ services:
       - ./sustainabull_backend:/sustainabull_backend  # backendコードのホットリロードを有効化
 
   frontend:
+    platform: linux/arm64
     build: ./sustainabull_frontend  # 正しいディレクトリ名に変更
     container_name: sustainabull_frontend
     restart: always

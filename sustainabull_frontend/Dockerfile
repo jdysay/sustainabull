@@ -8,7 +8,10 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 
 # Ensure correct platform-specific packages
-RUN npm install --platform=linux --arch=arm64 --ignore-scripts --omit=optional
+
+
+RUN npm install --omit=optional
+
 
 # Bundle app source inside the Docker image
 COPY . .

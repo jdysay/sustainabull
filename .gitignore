@@ -159,7 +159,7 @@ venv/
 .DS_Store
 
 # React project
-sustainabull-project/node_modules/
-sustainabull-project/.parcel-cache/
+sustainabull_frontend/node_modules/
+sustainabull_frontend/.parcel-cache/
 
 node_modules/

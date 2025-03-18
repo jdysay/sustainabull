@@ -1,42 +1,42 @@
-# version: "3.8"
 services:
+  db:
+    image: postgres:15
+    container_name: sustainabull_db
+    restart: always
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: sustainabull
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+      - ./initdb:/docker-entrypoint-initdb.d  # initdbフォルダがある前提でマウント
+
+  backend:
+    build: ./sustainabull_backend
+    container_name: sustainabull_backend
+    restart: always
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: postgres://admin:password@db:5432/sustainabull
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./sustainabull_backend:/sustainabull_backend  # backendコードのホットリロードを有効化
+
   frontend:
-    build:
-      context: ./sustainabull-project
-      dockerfile: Dockerfile
+    build: ./sustainabull_frontend  # 正しいディレクトリ名に変更
+    container_name: sustainabull_frontend
+    restart: always
+    depends_on:
+      - backend
     ports:
       - "5173:5173"
     volumes:
-      - ./sustainabull-project:/app
-      - /app/node_modules
-    environment:
-      - CHOKIDAR_USEPOLLING=true
-    depends_on:
-      - backend
-
-  backend:
-    build:
-      context: ./sustainabull_backend
-      dockerfile: Dockerfile
-    environment:
-      - POSTGRES_HOST=db
-      - POSTGRES_USER=myuser
-      - POSTGRES_PASSWORD=mypassword
-    ports:
-      - "8000:8000"
-  #   depends_on:
-  #     - db
-
-  # db:
-  #   image: postgres:latest
-  #   environment:
-  #     - POSTGRES_USER=myuser
-  #     - POSTGRES_PASSWORD=mypassword
-  #     - POSTGRES_DB=mydb # Your database name
-  #   ports:
-  #     - "5432:5432"
-  #   volumes:
-  #     - postgres_data:/var/lib/postgresql/data
+      - ./sustainabull_frontend:/app  # 正しいディレクトリをマウント
+      # - /app/node_modules は不要（競合回避）
 
 volumes:
-  postgres_data:
+  db_data:

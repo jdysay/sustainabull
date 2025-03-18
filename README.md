@@ -100,7 +100,7 @@
 *   **Adding New Node.js Dependencies:**
     1.  Navigate to the frontend directory:
         ```
-        cd sustainabull-project
+        cd sustainabull_frontend
         ```
     2.  Install the new package:
         ```

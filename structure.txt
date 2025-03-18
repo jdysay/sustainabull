@@ -1,5 +1,5 @@
 Project folder: sustainabull/ 
-Frontend: sustainabull-project/
+Frontend: sustainabull_frontend/
 Backend: sustainabull_backend/
 
 -----------------------------------------------------------------------------------
@@ -9,7 +9,7 @@ sustainabull/              (Root directory of the project)
 ├── .gitignore             (Root .gitignore file)
 ├── docker-compose.yml     (Docker Compose configuration)
 ├── README.md              (Main project README)
-├── sustainabull-project/  (Frontend - React application)
+├── sustainabull_frontend/  (Frontend - React application)
 │   ├── .gitignore         (Frontend .gitignore file)
 │   ├── index.html         (Main HTML file)
 │   ├── package.json       (Frontend dependencies)

@@ -4,11 +4,11 @@ FROM node:20-alpine
 # Set the working directory in the container
 WORKDIR /app
 
-# Copy package.json and package-lock.json (if you have it) to the working directory
-COPY package*.json ./
+# Copy only package.json and package-lock.json
+COPY package.json package-lock.json ./
 
-# Install app dependencies
-RUN npm install
+# Ensure correct platform-specific packages
+RUN npm install --platform=linux --arch=arm64 --ignore-scripts --omit=optional
 
 # Bundle app source inside the Docker image
 COPY . .

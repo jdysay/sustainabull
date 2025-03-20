@@ -1,4 +1,30 @@
 from pathlib import Path
+from urllib import request
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+
+ORS_API_KEY = os.getenv("ORS_API_KEY")
+ORS_URL = "https://api.openrouteservice.org/v2/directions/driving-car"
+
+
+if not ORS_API_KEY:
+    raise ValueError("Missing OpenRouteService API Key! Set ORS_API_KEY in the .env file.")
+
+def get_route(start, end):
+    headers = { "Authorization": ORS_API_KEY}
+    params = {
+        "start": f"{start[1]}, {start[0]}",
+        "end": f"{end[1]}, {end[0]}"
+    }
+
+    response = request.get(ORS_URL, headers=headers, params=params)
+
+    if response.status_code == 200:
+        return response.json()
+    else:
+        return response.text # print error message if request fails
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent

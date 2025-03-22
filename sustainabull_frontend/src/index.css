@@ -1,8 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Jersey+10&family=Pixelify+Sans:wght@400..700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
 
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
@@ -28,13 +29,18 @@ a:hover {
   color: #535bf2;
 }
 
+/* Fix body to span full screen */
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
+  min-height: 100vh; /* Ensure body spans full viewport height */
+  width: 100%; /* Ensure body spans full viewport width */
   font-family: 'Pixelify Sans', sans-serif;
+}
+
+/* Ensure #root spans full screen */
+#root {
+  min-height: 100vh; /* Ensure #root spans full viewport height */
+  width: 100%; /* Ensure #root spans full viewport width */
 }
 
 h1 {
@@ -73,4 +79,8 @@ button:focus-visible {
   button {
     background-color: #f9f9f9;
   }
+}
+
+.font-pixel {
+  font-family: 'Press Start 2P', cursive;
 }

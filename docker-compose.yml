@@ -11,7 +11,7 @@ services:
       - "5432:5432"
     volumes:
       - db_data:/var/lib/postgresql/data
-      - ./initdb:/docker-entrypoint-initdb.d  # initdbフォルダがある前提でマウント
+      - ./initdb:/docker-entrypoint-initdb.d
 
   backend:
     build: ./sustainabull_backend
@@ -24,11 +24,12 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - ./sustainabull_backend:/sustainabull_backend  # backendコードのホットリロードを有効化
+      - ./sustainabull_backend:/app
+      - backend_venv:/venv
 
   frontend:
     platform: linux/arm64
-    build: ./sustainabull_frontend  # 正しいディレクトリ名に変更
+    build: ./sustainabull_frontend
     container_name: sustainabull_frontend
     restart: always
     depends_on:
@@ -36,8 +37,9 @@ services:
     ports:
       - "5173:5173"
     volumes:
-      - ./sustainabull_frontend:/app  # 正しいディレクトリをマウント
-      # - /app/node_modules は不要（競合回避）
+      - ./sustainabull_frontend:/app
+      # - /app/node_modules
 
 volumes:
   db_data:
+  backend_venv:

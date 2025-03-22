@@ -32,7 +32,6 @@ export default function Home() {
         <img
           src={cow}
           alt="Cow"
-          className="w-[50vw] h-[50vh] object-contain"
         />
       </div>
 

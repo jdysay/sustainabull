@@ -26,12 +26,22 @@ function HomePage() {
             className="bg-white text-blue-500 px-4 py-2 rounded shadow-lg"
             onClick={() => navigate("/login")}
             >
-            Go to Login
+            Login
+            </button>
+        </div>
+
+        {/* Button Container */}
+        <div className="flex justify-center pb-4 relative z-30">
+            <button
+            className="bg-white text-blue-500 px-4 py-2 rounded shadow-lg"
+            onClick={() => navigate("/signup")}
+            >
+            Sign up
             </button>
         </div>
 
         {/* Cloud Images */}
-        <img
+        {/* <img
             src={Cloud1Image}
             alt="Cloud"
             className="w-64 h-auto absolute bottom-0 left-0 z-10"
@@ -40,7 +50,7 @@ function HomePage() {
             src={Cloud2Image}
             alt="Cloud"
             className="w-64 h-auto absolute bottom-0 left-40 z-20"
-        />
+        /> */}
         </div>
 
       );

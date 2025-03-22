@@ -64,7 +64,7 @@ function LoginPage() {
     };
 
     return (
-        <div className="min-h-screen w-[400px] flex flex-col items-center justify-center bg-custom-blue-light relative">
+        <div className="min-h-screen flex flex-col items-center justify-center bg-blue-100 relative">
             {/* Top Clouds */}
             <div className="absolute top-0 left-0 w-full flex justify-center">
                 <img src={TopCloudImage1} alt="Cloud" className="w-64 h-auto absolute left-0 z-10" />

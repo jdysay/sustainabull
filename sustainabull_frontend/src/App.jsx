@@ -6,6 +6,9 @@ import SignUpPage from './SignUpPage';
 import LoadingPage from './LoadingPage';
 import PreOnboarding from './pre-onboarding/PreOnboarding'
 import Home from './Home'
+import TransportationMode from './map/TransportationMode';
+import InputDestination from './map/InputDestination';
+import OngoingTrip from './map/OngoingTrip';
 
 function App() {
   return (
@@ -17,6 +20,9 @@ function App() {
         <Route path="/loading" element={<LoadingPage/>} />
         <Route path="/pre-onboarding" element={<PreOnboarding/>} />
         <Route path="/home" element={<Home/>} />
+        <Route path="/transportation-mode" element={<TransportationMode/>} />
+        <Route path="/input-destination" element={<InputDestination/>} />
+        <Route path="/ongoing-trip" element={<OngoingTrip/>} />
       </Routes>
     </Router>
   );

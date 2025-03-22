@@ -30,7 +30,7 @@ function LoginPage() {
             // Store the token in localStorage
             localStorage.setItem('token', token);
             // Redirect to loading page
-            navigate("/loading");
+            navigate("/pre-onboarding");
         } catch (error) {
             console.error('Login error:', error);
             

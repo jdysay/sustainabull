@@ -5,6 +5,7 @@ import LoginPage from './LoginPage';
 import SignUpPage from './SignUpPage';
 import LoadingPage from './LoadingPage';
 import PreOnboarding from './pre-onboarding/PreOnboarding'
+import Home from './Home'
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
         <Route path="/signup" element={<SignUpPage/>} />
         <Route path="/loading" element={<LoadingPage/>} />
         <Route path="/pre-onboarding" element={<PreOnboarding/>} />
+        <Route path="/home" element={<Home/>} />
       </Routes>
     </Router>
   );

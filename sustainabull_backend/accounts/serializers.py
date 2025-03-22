@@ -49,6 +49,6 @@ class LoginSerializer(serializers.Serializer):
         user = authenticate(username=username, password=password)
 
         if user is None:
-            raise serializers.ValidationError("Invalid credentials")
+            raise serializers.ValidationError("Invalid username or password. Please try again.")
 
         return user

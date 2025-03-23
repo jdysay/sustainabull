@@ -1,6 +1,7 @@
 from pathlib import Path
 from urllib import request
 from dotenv import load_dotenv
+from django.http import JsonResponse
 import os
 
 load_dotenv()
@@ -12,19 +13,35 @@ ORS_URL = "https://api.openrouteservice.org/v2/directions/driving-car"
 if not ORS_API_KEY:
     raise ValueError("Missing OpenRouteService API Key! Set ORS_API_KEY in the .env file.")
 
-def get_route(start, end):
-    headers = { "Authorization": ORS_API_KEY}
-    params = {
-        "start": f"{start[1]}, {start[0]}",
-        "end": f"{end[1]}, {end[0]}"
+def get_route(request):
+    start_lat = request.GET.get("start_lat")
+    start_lng = request.GET.get("start_lng")
+    end_lat = request.GET.get("end_lat")
+    end_lng = request.GET.get("end_lng")
+
+    if not all([start_lat, start_lng, end_lat, end_lng]):
+        return JsonResponse({"error": "Missing parameters"}, status=400)
+
+     # ORS expects "longitude,latitude" format
+    start = [float(start_lng), float(start_lat)]
+    end = [float(end_lng), float(end_lat)]
+
+    # ORS expects coordinates inside a 'coordinates' key
+    request_body = {
+        "coordinates": [start, end]
     }
 
-    response = request.get(ORS_URL, headers=headers, params=params)
+    headers = {
+        "Authorization": ORS_API_KEY,
+        "Content-Type": "application/json"
+    }
+
+    response = requests.post(ORS_URL, json=request_body, headers=headers)
 
     if response.status_code == 200:
-        return response.json()
+        return JsonResponse(response.json(), safe=False)
     else:
-        return response.text # print error message if request fails
+        return JsonResponse(response.json(), status=response.status_code)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent

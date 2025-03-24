@@ -168,8 +168,12 @@ export default function InputDestination() {
             <Link to="/transportation-mode" className="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition">
                 Back
             </Link>
-            <Link to="/ongoing-trip" className="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition">
-                Next
+            <Link 
+              to="/ongoing-trip"
+              state={{ startLocation, endLocation, route }}
+              className="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition"
+            >
+              Next
             </Link>
         </div>
       </div>

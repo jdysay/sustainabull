@@ -3,7 +3,11 @@ import { Link, useNavigate } from 'react-router-dom';
 import { MapContainer, TileLayer, Marker, Polyline, useMap } from 'react-leaflet';
 import L from 'leaflet';
 
-// Helper function to calculate distance between two coordinates
+// Hardcoded Coordinates for Testing
+const startLocation = [49.2827, -123.1207]; 
+const endLocation = [49.2645, -122.2711];   
+const userPosition = [36.7783, -123.1867];   
+
 const getDistance = (lat1, lon1, lat2, lon2) => {
   const R = 6371e3; // Radius of Earth in meters
   const toRad = (x) => (x * Math.PI) / 180;
@@ -18,41 +22,71 @@ const getDistance = (lat1, lon1, lat2, lon2) => {
   return R * c; // Distance in meters
 };
 
-export default function OngoingTrip({ startLocation, endLocation, route }) {
+export default function OngoingTrip() {
   const navigate = useNavigate();
-  const [userPosition, setUserPosition] = useState(null);
   const [distanceLeft, setDistanceLeft] = useState(null);
   const [showWarning, setShowWarning] = useState(false);
   const [arrived, setArrived] = useState(false);
+  const [route, setRoute] = useState(null);
 
-  // Track user's real-time position
+  // Function to fetch the route from OpenRouteService API
+  const fetchRoute = async () => {
+    if (!startLocation || !endLocation) {
+      console.error("Start or end location is missing");
+      return;
+    }
+    // Correct way to construct the URL with template literals
+    const url = `http://127.0.0.1:8000/api/routes/get-route/?start_lat=${startLocation[0]}&start_lng=${startLocation[1]}&end_lat=${endLocation[0]}&end_lng=${endLocation[1]}`;
+
+    console.log("Fetching route with URL:", url);
+
+    try {
+      const response = await fetch(url);
+      if (!response.ok) {
+        console.error("Failed to fetch route:", response.statusText);
+        return;
+      }
+
+      const data = await response.json();
+      if (data.features) {
+        const coordinates = data.features[0].geometry.coordinates.map(([lng, lat]) => [lat, lng]);
+        setRoute(coordinates);
+      } else {
+        console.error("No route found:", data);
+      }
+    } catch (error) {
+      console.error("Error fetching route:", error);
+    }
+
+  };
+
+  // Fetch route when the component mounts or when startLocation or endLocation change
+  useEffect(() => {
+    if (startLocation && endLocation) {
+      fetchRoute(); // Call the function to fetch the route
+    }
+  }, [startLocation, endLocation]); // Dependency on startLocation and endLocation
+
+  // Simulate user position update (you could later replace this with real geolocation)
   useEffect(() => {
     if (!endLocation) return;
 
-    const watchId = navigator.geolocation.watchPosition(
-      (position) => {
-        const { latitude, longitude } = position.coords;
-        setUserPosition([latitude, longitude]);
+    const latitude = userPosition[0];
+    const longitude = userPosition[1];
+    
+    // Calculate remaining distance
+    const distance = getDistance(latitude, longitude, endLocation[0], endLocation[1]);
+    setDistanceLeft(distance);
 
-        // Calculate remaining distance
-        const distance = getDistance(latitude, longitude, endLocation[0], endLocation[1]);
-        setDistanceLeft(distance);
-
-        // Check if user has arrived (threshold: 50 meters)
-        if (distance < 50) {
-          setArrived(true);
-          setTimeout(() => {
-            alert("You have arrived at your destination!");
-            navigate('/home'); // Redirect after arrival
-          }, 2000);
-        }
-      },
-      (error) => console.error("Error tracking position:", error),
-      { enableHighAccuracy: true }
-    );
-
-    return () => navigator.geolocation.clearWatch(watchId); // Cleanup on unmount
-  }, [endLocation, navigate]);
+    // Check if user has arrived (threshold: 50 meters)
+    if (distance < 50) {
+      setArrived(true);
+      setTimeout(() => {
+        alert("You have arrived at your destination!");
+        navigate('/home'); // Redirect after arrival
+      }, 2000);
+    }
+  }, [endLocation]);
 
   // Handle "Abandon" trip action
   const handleAbandonTrip = () => {
@@ -86,7 +120,9 @@ export default function OngoingTrip({ startLocation, endLocation, route }) {
               )}
               {endLocation && <Marker position={endLocation} />}
               {userPosition && <Marker position={userPosition} icon={L.icon({ iconUrl: 'https://leafletjs.com/examples/custom-icons/leaf-green.png', iconSize: [25, 41], iconAnchor: [12, 41] })} />}
-              {route && <Polyline positions={route} color="blue" />}
+              {route && (
+                <Polyline positions={route} color="blue" />
+              )}
             </MapContainer>
           </div>
 
@@ -113,7 +149,7 @@ export default function OngoingTrip({ startLocation, endLocation, route }) {
             <h2 className="text-xl font-bold mb-4">Are you sure?</h2>
             <p className="mb-4">If you abandon the trip, the cow will lose health!</p>
             <div className="flex justify-around">
-              <button onClick={() => setShowWarning(false)} className="bg-gray-300 text-black py-2 px-4 rounded-lg hover:bg-blue-500 transition">
+              <button onClick={() => setShowWarning(false)} className="bg-gray-300 text-black py-2 px-4 rounded-lg hover:bg-gray-400 transition">
                 Cancel
               </button>
               <button onClick={confirmAbandon} className="bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600 transition">

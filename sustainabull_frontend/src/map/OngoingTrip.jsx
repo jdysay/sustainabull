@@ -25,6 +25,9 @@ export default function OngoingTrip() {
 
         <button className="bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600 transition">
         Abandon
+         {/* We should add a warning to the user that when they click this button, they cannot go back.
+                    This is because the cow will lose health if the user abandons trips. (POPUP)
+          */}
         </button>
       </div>
         <Link to="/home" className="mt-6 w-50 bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-800 transition block text-center">

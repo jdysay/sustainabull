@@ -4,7 +4,6 @@ import HomePage from "./HomePage"
 import LoginPage from './LoginPage';
 import SignUpPage from './SignUpPage';
 import LoadingPage from './LoadingPage';
-import MapWithDestination from './map/MapWithDesitnation';
 import PreOnboarding from './pre-onboarding/PreOnboarding'
 import Home from './Home'
 import TransportationMode from './map/TransportationMode';
@@ -26,7 +25,6 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignUpPage/>} />
         <Route path="/loading" element={<LoadingPage/>} />
-        <Route path="/map/MapWithDestination" element={<MapWithDestination/>} />
         <Route path="/pre-onboarding" element={<PreOnboarding/>} />
         <Route path="/home" element={<Home/>} />
         <Route path="/transportation-mode" element={<TransportationMode/>} />

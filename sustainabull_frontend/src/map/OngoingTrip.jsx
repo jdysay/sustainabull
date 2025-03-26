@@ -14,6 +14,8 @@ export default function OngoingTrip() {
   const location = useLocation();
   const [totalDistance, setTotalDistance] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [startAddress, setStartAddress] = useState("Loading...");
+  const[endAddress, setEndAddress] = useState("Loading...");
   
 
   // const { startLocation = [0, 0], endLocation = [0, 0] } = location.state || {};
@@ -23,6 +25,28 @@ export default function OngoingTrip() {
   const endLocation = [49.231408, -122.836461];   
   const userPosition = [49.231408, -122.836461];   
   // const userPosition = [49.257112, -122.916780];  
+
+  // convert coordinates to address
+  const getAddress = async (lat, lng, setAddress) => {
+    try {
+      const response = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`);
+      const data = await response.json();
+
+      if(data.display_name) {
+        setAddress(data.display_name);
+      } else {
+        setAddress("Address not found")
+      } 
+    } catch (error) {
+        console.error("Error fetching address: ", error);
+        setAddress("Error fetching address");
+    }
+  };
+
+  useEffect(() => {
+    getAddress(startLocation[0], startLocation[1], setStartAddress);
+    getAddress(endLocation[0], endLocation[1], setEndAddress);
+  }, []);
 
   // Haversine formula to calculate the distance between two points
   const haversineDistance = (lat1, lng1, lat2, lng2) => {
@@ -99,7 +123,7 @@ export default function OngoingTrip() {
             <h2 className="text-gray-600 text-xl font-bold mb-4">Trip Complete!</h2>
             <p className="text-gray-600 mb-4">prize prize prize</p>
             <div className="flex justify-around">
-              <button onClick={() => setShowWarning(false)} className="bg-gray-300 text-black py-2 px-4 rounded-lg hover:bg-gray-400 transition">
+              <button onClick={onClose} className="bg-gray-300 text-black py-2 px-4 rounded-lg hover:bg-gray-400 transition">
                 Hooray!
               </button>
             </div>
@@ -107,11 +131,10 @@ export default function OngoingTrip() {
         </div>
     );
   };
-  
-  // Only fetch the route once when the component is mounted
+
   useEffect(() => {
     fetchRoute();
-  }, []); // Empty dependency array ensures this only runs once when the component is first mounted
+  }, []); 
 
 
   // Track user's position and calculate the distance to the destination
@@ -145,11 +168,6 @@ export default function OngoingTrip() {
     };
   }, [arrived, navigate]);
 
-  
-  useEffect(() => {
-    fetchRoute();
-  }, []); 
-
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center p-4">
       <h1 className="text-2xl font-bold mb-8">Ongoing Trip</h1>
@@ -158,7 +176,7 @@ export default function OngoingTrip() {
         <div className="space-y-4">
           <div className="text-center">
             <p className="text-lg font-semibold">Start Destination</p>
-            <p className="text-gray-600">{startLocation.join(", ")}</p>
+            <p className="text-gray-600">{startAddress}</p>
           </div>
 
           <div className="w-full h-64 relative">
@@ -173,7 +191,7 @@ export default function OngoingTrip() {
 
           <div className="text-center">
             <p className="text-lg font-semibold">End Destination</p>
-            <p className="text-gray-600">{endLocation.join(", ")}</p>
+            <p className="text-gray-600">{endAddress}</p>
           </div>
 
           <div className="text-center">
@@ -216,10 +234,6 @@ export default function OngoingTrip() {
           onClose={() => setShowModal(false)} 
           message="You have arrived at your destination!" 
         />
-
-      <Link to="/home" className="mt-6 w-50 bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-800 transition block text-center">
-        Home
-      </Link>
     </div>
   );
 }

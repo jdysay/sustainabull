@@ -1,6 +1,12 @@
 import { Link } from 'react-router-dom';
+import { useState } from 'react';
 
 export default function TransportationMode() {
+  const [selectedMode, setSelectedMode] = useState(null);
+  
+  const handleSelectMode = mode => {
+    setSelectedMode(mode);
+  }
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center p-4">
       <h1 className="text-2xl font-bold mb-8">Transportation Mode</h1>
@@ -10,13 +16,20 @@ export default function TransportationMode() {
           {['Walk', 'Bike', 'Transit', 'Drive'].map((mode) => (
             <button
               key={mode}
+              onClick={() => handleSelectMode(mode)}
               className="w-full bg-blue-100 text-blue-500 py-2 px-4 rounded-lg hover:bg-blue-600 transition"
             >
               {mode}
             </button>
           ))}
         </div>
-        <Link to="/input-destination" className="mt-6 w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-green-600 transition block text-center">
+        <Link
+          to="/input-destination"
+          state={{ selectedMode }}
+          className={`mt-6 w-full py-2 px-4 rounded-lg transition block text-center ${
+            selectedMode ? 'bg-blue-500 text-white hover:bg-green-600' : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+          }`}
+        >
           Next
         </Link>
       </div>

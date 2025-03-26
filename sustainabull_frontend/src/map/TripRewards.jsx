@@ -5,10 +5,13 @@ import L from 'leaflet';
 import polyline from 'polyline';
 
 
+
 export default function TripRewards() {
+  const navigate = useNavigate();
   const [setDistanceLeft] = useState(null);
   const [route, setRoute] = useState(null);
   const [totalDistance, setTotalDistance] = useState(null);
+  const selectedMode = location.state?.selectedMode || "Walk"; // default is walk
 
   const startLocation = [49.276291, -122.909554]; 
   const endLocation = [49.231408, -122.836461];   
@@ -55,6 +58,7 @@ export default function TripRewards() {
   
           // Print the total distance to the console
           console.log(`Total distance: ${routeDistanceMeters} meters`);
+  
         } else {
           console.error("Route geometry is missing");
         }
@@ -65,6 +69,20 @@ export default function TripRewards() {
       console.error("Error fetching route:", error);
     }
   };
+
+  const calculateRewards = () => {
+    if(selectedMode === "Drive") {
+      return { xp: 0, coins: 0, food: "0 corn chunks"};
+    }
+
+    const xp = totalDistance ? Math.round((totalDistance * 1)/10) : 0;
+    const coins = Math.round(totalDistance * 1) ;
+    const food = "10 corn chunks";
+
+    return { xp, coins, food };
+  };
+
+  const rewards = calculateRewards();
 
   useEffect(() => {
     fetchRoute();
@@ -77,10 +95,6 @@ export default function TripRewards() {
 
       <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-md">
         <div className="space-y-4">
-          <div className="text-center">
-            <p className="text-lg font-semibold text-gray-600">Start Destination</p>
-            <p className="text-gray-600">{startLocation.join(", ")}</p>
-          </div>
 
           <div className="w-full h-64 relative">
             <MapContainer center={userPosition || startLocation} zoom={13} className="h-full w-full z-10">
@@ -93,26 +107,24 @@ export default function TripRewards() {
           </div>
 
           <div className="text-center">
-            <p className="text-lg font-semibold text-gray-600">End Destination</p>
-            <p className="text-gray-600">{endLocation.join(", ")}</p>
-          </div>
-
-          <div className="text-center">
-            <p className="text-2xl font-bold text-custom-orange mb-5">Rewards</p>
-            <p className="text-lg font-semibold text-custom-orange">Total Distance</p>
+            <p className="text-2xl font-bold text-custom-orange-dark mb-5">Rewards</p>
+            <p className="text-lg font-semibold text-custom-orange-dark">Total Distance</p>
             <p className="text-custom-orange mb-2">{totalDistance !== null ? `${Math.round(totalDistance)} meters` : "Loading..."}</p>
-            <p className="text-lg font-semibold text-custom-orange">Points Earned</p>
-            <p className="text-custom-orange mb-2">{totalDistance !== null ? `${Math.round(totalDistance)} XP` : "Loading..."}</p>
-            <p className="text-lg font-semibold text-custom-orange">Coins Earned</p>
-            <p className="text-custom-orange mb-2">{totalDistance !== null ? `${Math.round(totalDistance)} coins` : "Loading..."}</p>
-            <p className="text-lg font-semibold text-custom-orange">Food Earned</p>
-            <p className="text-custom-orange mb-2">10 corn chunks</p>
+            <p className="text-lg font-semibold text-custom-orange-dark">Points Earned</p>
+            <p className="text-custom-orange mb-2">{rewards.xp} XP</p>
+            <p className="text-lg font-semibold text-custom-orange-dark">Coins Earned</p>
+            <p className="text-custom-orange mb-2">{rewards.coins} coins</p>
+            <p className="text-lg font-semibold text-custom-orange-dark">Food Earned</p>
+            <p className="text-custom-orange mb-2">{rewards.food}</p>
           </div>
         </div>
 
-        <Link to="/transportation-mode" className="mt-6 w-full bg-custom-orange-dark text-white py-2 px-4 rounded-lg hover:bg-custom-orange transition block text-center">
+        <button
+          onClick={() => navigate('/transportation-mode')}
+          className="mt-6 w-full bg-custom-orange-dark text-white py-2 px-4 rounded-lg hover:bg-custom-orange transition block border-none text-center"
+        >
           Next
-        </Link>
+        </button>
       </div>
     </div>
   );

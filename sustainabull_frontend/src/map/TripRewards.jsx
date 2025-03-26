@@ -6,18 +6,9 @@ import polyline from 'polyline';
 
 
 export default function TripRewards() {
-  const navigate = useNavigate();
-  const [distanceLeft, setDistanceLeft] = useState(null);
-  const [showWarning, setShowWarning] = useState(false);
-  const [arrived, setArrived] = useState(false);
+  const [setDistanceLeft] = useState(null);
   const [route, setRoute] = useState(null);
-  const location = useLocation();
   const [totalDistance, setTotalDistance] = useState(null);
-  const [showModal, setShowModal] = useState(false);
-  
-
-  // const { startLocation = [0, 0], endLocation = [0, 0] } = location.state || {};
-  // const [userPosition, setUserPosition] = useState(null);
 
   const startLocation = [49.276291, -122.909554]; 
   const endLocation = [49.231408, -122.836461];   

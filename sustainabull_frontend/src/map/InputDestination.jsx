@@ -72,30 +72,6 @@ export default function InputDestination() {
     setEndLocation([location.lat, location.lon]);
     setSearchResults([]); // clear suggestions
   }
-
-  // fetch route using OpenRouteService API
-  const fetchRoute = async () => {
-    if(! startLocation || !endLocation) {
-      console.error("Start or end location is missing");
-      return;
-    }
-    try {
-      const response = await fetch(
-        `http://127.0.0.1:8000/api/routes/get-route/?start_lat=${start.lat}&start_lng=${start.lng}&end_lat=${end.lat}&end_lng=${end.lng}`
-      );
-  
-      const data = await response.json();
-  
-      if (data.features) {
-        const coordinates = data.features[0].geometry.coordinates.map(([lng, lat]) => [lat, lng]);
-        setRoute(coordinates);
-      } else {
-        console.error("No route found:", data);
-      }
-    } catch (error) {
-      console.error("Error fetching route:", error);
-    }
-  };
   
   // update map view
   function UpdateMapView({ position }) {
@@ -122,7 +98,7 @@ export default function InputDestination() {
             placeholder="Fetching current location..."
             value={startAddress}
             className="w-full p-2 border border-gray-300 rounded-lg"
-            onChange={(e) => setStartAddress(e.target.value)} // Allow users to edit
+            readOnly
           />
 
            {/* search for end destination */}

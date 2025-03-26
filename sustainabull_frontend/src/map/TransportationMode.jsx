@@ -13,11 +13,15 @@ export default function TransportationMode() {
       <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-md">
         <h2 className="text-lg font-semibold mb-4">Form of Transportation</h2>
         <div className="space-y-4">
-          {['Walk', 'Bike', 'Transit', 'Drive'].map((mode) => (
+          {['Walk', 'Bike', 'Transit', 'Drive (electric vehicle)', 'Drive'].map((mode) => (
             <button
               key={mode}
               onClick={() => handleSelectMode(mode)}
-              className="w-full bg-blue-100 text-blue-500 py-2 px-4 rounded-lg hover:bg-blue-600 transition"
+              className={`w-full py-2 px-4 rounded-lg transition ${
+                selectedMode === mode
+                  ? 'bg-custom-orange text-white hover: border-none' // Selected state
+                  : 'bg-blue-100 text-blue-500 hover:bg-blue-600 border-none'
+              }`}
             >
               {mode}
             </button>

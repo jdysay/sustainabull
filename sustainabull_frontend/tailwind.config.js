@@ -19,6 +19,8 @@ export default {
         'custom-blue-dark': '#3774AD',
         'custom-white': '#F1F1F1',
         'custom-grey': '#919191',
+        'custom-orange':'#EB9C5B',
+        'custom-orange-dark': '#DD7431',
       },
     },
   },

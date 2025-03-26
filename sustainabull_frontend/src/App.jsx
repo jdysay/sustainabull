@@ -14,6 +14,7 @@ import Leaderboard from './leaderboard/Leaderboard';
 import Settings from './settings/Settings';
 import Inventory from './inventory/Inventory';
 import Map from './map/TransportationMode';
+import TripRewards from './map/TripRewards';
 import Farm from './farm/Farm';
 
 
@@ -30,6 +31,7 @@ function App() {
         <Route path="/transportation-mode" element={<TransportationMode/>} />
         <Route path="/input-destination" element={<InputDestination/>} />
         <Route path="/ongoing-trip" element={<OngoingTrip/>} />
+        <Route path="/trip-rewards" element={<TripRewards/>} />
         <Route path="/shop" element={<Shop/>} />
         <Route path="/leaderboard" element={<Leaderboard/>} />
         <Route path="/settings" element={<Settings/>} />

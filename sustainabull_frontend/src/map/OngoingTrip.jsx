@@ -13,13 +13,16 @@ export default function OngoingTrip() {
   const [route, setRoute] = useState(null);
   const location = useLocation();
   const [totalDistance, setTotalDistance] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+  
 
   // const { startLocation = [0, 0], endLocation = [0, 0] } = location.state || {};
   // const [userPosition, setUserPosition] = useState(null);
 
   const startLocation = [49.276291, -122.909554]; 
-  const endLocation = [49.249098, -122.894339];   
-  const userPosition = [49.257112, -122.916780];  
+  const endLocation = [49.231408, -122.836461];   
+  const userPosition = [49.231408, -122.836461];   
+  // const userPosition = [49.257112, -122.916780];  
 
   // Haversine formula to calculate the distance between two points
   const haversineDistance = (lat1, lng1, lat2, lng2) => {
@@ -86,6 +89,24 @@ export default function OngoingTrip() {
       console.error("Error fetching route:", error);
     }
   };
+
+  const Modal = ({ isOpen, onClose, message }) => {
+    if (!isOpen) return null;
+
+    return (
+      <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg shadow-md text-center w-80">
+            <h2 className="text-gray-600 text-xl font-bold mb-4">Trip Complete!</h2>
+            <p className="text-gray-600 mb-4">prize prize prize</p>
+            <div className="flex justify-around">
+              <button onClick={() => setShowWarning(false)} className="bg-gray-300 text-black py-2 px-4 rounded-lg hover:bg-gray-400 transition">
+                Hooray!
+              </button>
+            </div>
+          </div>
+        </div>
+    );
+  };
   
   // Only fetch the route once when the component is mounted
   useEffect(() => {
@@ -107,10 +128,10 @@ export default function OngoingTrip() {
         // Check if the user has arrived
         if (distance < 50 && !arrived) {
           setArrived(true);
+          setShowModal(true);
           setTimeout(() => {
-            alert("You have arrived at your destination!");
             navigate('/home');
-          }, 2000);
+          }, 10000);
         }
       },
       (error) => {
@@ -120,16 +141,14 @@ export default function OngoingTrip() {
     );
 
     return () => {
-      // Cleanup on component unmount
       navigator.geolocation.clearWatch(watchId);
     };
   }, [arrived, navigate]);
 
-  // Only fetch the route once when the component is mounted
+  
   useEffect(() => {
     fetchRoute();
-  }, []); // Empty dependency array ensures this only runs once when the component is first mounted
-
+  }, []); 
 
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center p-4">
@@ -177,8 +196,8 @@ export default function OngoingTrip() {
       {showWarning && (
         <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded-lg shadow-md text-center w-80">
-            <h2 className="text-xl font-bold mb-4">Are you sure?</h2>
-            <p className="mb-4">If you abandon the trip, the cow will lose health!</p>
+            <h2 className="text-gray-600 text-xl font-bold mb-4">Are you sure?</h2>
+            <p className="mb-4 text-gray-600">If you abandon the trip, the cow will lose health!</p>
             <div className="flex justify-around">
               <button onClick={() => setShowWarning(false)} className="bg-gray-300 text-black py-2 px-4 rounded-lg hover:bg-gray-400 transition">
                 Cancel
@@ -190,6 +209,13 @@ export default function OngoingTrip() {
           </div>
         </div>
       )}
+
+       {/* Show arrival modal */}
+        <Modal 
+          isOpen={showModal} 
+          onClose={() => setShowModal(false)} 
+          message="You have arrived at your destination!" 
+        />
 
       <Link to="/home" className="mt-6 w-50 bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-800 transition block text-center">
         Home

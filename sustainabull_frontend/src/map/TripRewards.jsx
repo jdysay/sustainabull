@@ -13,10 +13,10 @@ export default function TripRewards() {
   const [totalDistance, setTotalDistance] = useState(null);
   const selectedMode = location.state?.selectedMode || "Walk"; // default is walk
 
+  // test coordinates
   const startLocation = [49.276291, -122.909554]; 
   const endLocation = [49.231408, -122.836461];   
   const userPosition = [49.231408, -122.836461];   
-  // const userPosition = [49.257112, -122.916780];  
 
   console.log("Start Location:", startLocation);
   console.log("End Location:", endLocation);
@@ -72,12 +72,12 @@ export default function TripRewards() {
 
   const calculateRewards = () => {
     if(selectedMode === "Drive") {
-      return { xp: 0, coins: 0, food: "0 corn chunks"};
+      return { xp: totalDistance ? Math.round((totalDistance * 0.1)/10) : 0, coins: Math.round(totalDistance * 0.1), food: "10 corn chunks"};
     }
 
     const xp = totalDistance ? Math.round((totalDistance * 1)/10) : 0;
     const coins = Math.round(totalDistance * 1) ;
-    const food = "10 corn chunks";
+    const food = "20 corn chunks";
 
     return { xp, coins, food };
   };

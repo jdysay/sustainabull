@@ -8,15 +8,19 @@ import polyline from 'polyline';
 
 export default function TripRewards() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [setDistanceLeft] = useState(null);
   const [route, setRoute] = useState(null);
   const [totalDistance, setTotalDistance] = useState(null);
   const selectedMode = location.state?.selectedMode || "Walk"; // default is walk
+  const { startLocation = [0, 0], endLocation = [0, 0] } = location.state || {};
+  
+
 
   // test coordinates
-  const startLocation = [49.276291, -122.909554]; 
-  const endLocation = [49.231408, -122.836461];   
-  const userPosition = [49.231408, -122.836461];   
+  // const startLocation = [49.276291, -122.909554]; 
+  // const endLocation = [49.231408, -122.836461];   
+  // const userPosition = [49.231408, -122.836461];   
 
   console.log("Start Location:", startLocation);
   console.log("End Location:", endLocation);
@@ -97,7 +101,7 @@ export default function TripRewards() {
         <div className="space-y-4">
 
           <div className="w-full h-64 relative">
-            <MapContainer center={userPosition || startLocation} zoom={13} className="h-full w-full z-10">
+            <MapContainer center={startLocation} zoom={13} className="h-full w-full z-10">
               <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
               <Marker position={startLocation} icon={L.icon({ iconUrl: 'https://leafletjs.com/examples/custom-icons/leaf-red.png', iconSize: [25, 41], iconAnchor: [12, 41] })} />
               <Marker position={endLocation} />
@@ -109,7 +113,7 @@ export default function TripRewards() {
           <div className="text-center">
             <p className="text-2xl font-bold text-custom-orange-dark mb-5">Rewards</p>
             <p className="text-lg font-semibold text-custom-orange-dark">Total Distance</p>
-            <p className="text-custom-orange mb-2">{totalDistance !== null ? `${Math.round(totalDistance)} meters` : "Loading..."}</p>
+            <p className="text-custom-orange mb-2"> {totalDistance !== null ? `${(totalDistance / 1000).toFixed(2)} km` : "Loading..."}</p>
             <p className="text-lg font-semibold text-custom-orange-dark">Points Earned</p>
             <p className="text-custom-orange mb-2">{rewards.xp} XP</p>
             <p className="text-lg font-semibold text-custom-orange-dark">Coins Earned</p>

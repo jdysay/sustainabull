@@ -11,11 +11,11 @@ import InputDestination from './map/InputDestination';
 import OngoingTrip from './map/OngoingTrip';
 import Shop from './shop/Shop';
 import Leaderboard from './leaderboard/Leaderboard';
-import Settings from './settings/Settings';
 import Inventory from './inventory/Inventory';
 import Map from './map/TransportationMode';
 import TripRewards from './map/TripRewards';
-import Farm from './farm/Farm';
+import CowDetails from './farm/CowDetails';
+import CowFarm from './farm/CowFarm';
 
 
 function App() {
@@ -34,10 +34,11 @@ function App() {
         <Route path="/trip-rewards" element={<TripRewards/>} />
         <Route path="/shop" element={<Shop/>} />
         <Route path="/leaderboard" element={<Leaderboard/>} />
-        <Route path="/settings" element={<Settings/>} />
         <Route path="/inventory" element={<Inventory/>} />
         <Route path="/map" element={<Map/>} />
-        <Route path="/farm" element={<Farm/>} />
+        <Route path="/farm" element={<CowFarm/>} />
+        <Route path="/cow-details" element={<CowDetails/>} />
+        <Route path="/cow/:id" element={<CowDetails />} />
       </Routes>
     </Router>
   );

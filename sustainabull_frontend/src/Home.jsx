@@ -2,15 +2,14 @@ import cow from './assets/images/cow.png';
 import { Link } from 'react-router-dom';
 
 export default function Home() {
-  // Define which buttons should link to another page
-  const linkedButtons = ['Shop', 'Leaderboard', 'Settings', 'Inventory', 'Map', 'Farm'];
+  const linkedButtons = ['Shop', 'Leaderboard', 'Inventory', 'Map', 'Farm'];
 
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-b from-blue-100 to-blue-200 font-mono">
 
       {/* Top Nav */}
-      <div className="flex justify-around bg-blue-900 text-black py-3 text-sm font-bold">
-        {['Level', 'Coins', 'Shop', 'Leaderboard', 'Settings'].map((nav) =>
+      <div className="flex justify-around bg-blue-900 text-black py-6 text-sm font-bold">
+        {['Level', 'Coins', 'Shop', 'Leaderboard'].map((nav) =>
           linkedButtons.includes(nav) ? (
             <Link
               key={nav}
@@ -58,7 +57,7 @@ export default function Home() {
       </div>
 
       {/* Bottom Nav */}
-      <div className="flex justify-around bg-blue-900 text-black py-3 text-sm font-bold">
+      <div className="flex justify-around bg-blue-900 text-black py-6 text-sm font-bold">
         {['Inventory', 'Map', 'Farm'].map((nav) =>
           linkedButtons.includes(nav) ? (
             <Link

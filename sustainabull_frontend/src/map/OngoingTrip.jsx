@@ -157,9 +157,6 @@ export default function OngoingTrip() {
         if (distance < 50 && !arrived) {
           setArrived(true);
           setShowModal(true);
-          setTimeout(() => {
-            navigate('/home');
-          }, 10000);
         }
       },
       (error) => {

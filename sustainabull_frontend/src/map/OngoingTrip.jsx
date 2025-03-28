@@ -18,12 +18,12 @@ export default function OngoingTrip() {
   const[endAddress, setEndAddress] = useState("Loading...");
   
 
-  // const { startLocation = [0, 0], endLocation = [0, 0] } = location.state || {};
-  // const [userPosition, setUserPosition] = useState(null);
+  const { startLocation = [0, 0], endLocation = [0, 0] } = location.state || {};
+  const [userPosition, setUserPosition] = useState(null);
 
-  const startLocation = [49.276291, -122.909554]; 
-  const endLocation = [49.231408, -122.836461];   
-  const userPosition = [49.231408, -122.836461];   
+  // const startLocation = [49.276291, -122.909554]; 
+  // const endLocation = [49.231408, -122.836461];   
+  // const userPosition = [49.231408, -122.836461];   
   // const userPosition = [49.257112, -122.916780];  
 
   // convert coordinates to address

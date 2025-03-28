@@ -21,6 +21,7 @@ export default function OngoingTrip() {
   const { startLocation = [0, 0], endLocation = [0, 0] } = location.state || {};
   const [userPosition, setUserPosition] = useState(null);
 
+  // test coordinates
   // const startLocation = [49.276291, -122.909554]; 
   // const endLocation = [49.231408, -122.836461];   
   // const userPosition = [49.231408, -122.836461];   
@@ -123,9 +124,13 @@ export default function OngoingTrip() {
             <h2 className="text-gray-600 text-xl font-bold mb-4">Trip Complete!</h2>
             <p className="text-gray-600 mb-4">prize prize prize</p>
             <div className="flex justify-around">
-              <button onClick={onClose} className="bg-gray-300 text-black py-2 px-4 rounded-lg hover:bg-gray-400 transition">
+              <Link 
+                to="/trip-rewards"
+                state={{ startLocation, endLocation }}
+                className="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition"
+              >
                 Hooray!
-              </button>
+              </Link>
             </div>
           </div>
         </div>
@@ -183,7 +188,6 @@ export default function OngoingTrip() {
             <MapContainer center={userPosition || startLocation} zoom={13} className="h-full w-full z-10">
               <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
               <Marker position={startLocation} icon={L.icon({ iconUrl: 'https://leafletjs.com/examples/custom-icons/leaf-red.png', iconSize: [25, 41], iconAnchor: [12, 41] })} />
-              <Marker position={endLocation} />
               <Marker position={endLocation} icon={L.icon({ iconUrl: 'https://leafletjs.com/examples/custom-icons/leaf-green.png', iconSize: [25, 41], iconAnchor: [12, 41] })} />
               {route && <Polyline positions={route} color="blue" />}
             </MapContainer>
@@ -196,7 +200,8 @@ export default function OngoingTrip() {
 
           <div className="text-center">
             <p className="text-lg font-semibold">Total Distance</p>
-            <p className="text-gray-600">{totalDistance !== null ? `${Math.round(totalDistance)} meters` : "Loading..."}</p>
+            <p className="text-gray-600"> {totalDistance !== null ? `${(totalDistance / 1000).toFixed(2)} km` : "Loading..."}
+            </p>
           </div>
 
           <div className="text-center">

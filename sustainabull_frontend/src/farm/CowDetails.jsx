@@ -64,7 +64,7 @@ const CowDetails = () => {
     return (
       <div className="max-w-4xl mx-auto p-6">
         <p>Cow not found!</p>
-        <Link to="/cow-farm" className="text-blue-500 hover:text-blue-700">
+        <Link to="/farm" className="text-blue-500 hover:text-blue-700">
           Back to Cow Farm
         </Link>
       </div>

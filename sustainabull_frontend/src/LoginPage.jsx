@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
+import { useAuth } from './context/AuthContext';
 import axios from 'axios';
 import './App.css';
 import Cloud1Image from "/src/assets/images/cloud1.png";
@@ -9,50 +10,40 @@ import TopCloudImage2 from "/src/assets/images/top-cloud2.png";
 
 function LoginPage() {
     const navigate = useNavigate();
+    const { login, user } = useAuth();
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [showError, setShowError] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
     const [isLoading, setIsLoading] = useState(false);
 
+    // If already logged in, redirect away from login page
+    useEffect(() => {
+        if (user) {
+            navigate('/shop');
+        }
+    }, [user, navigate]);
+
     const handleLogin = async (event) => {
         event.preventDefault();
         setIsLoading(true);
+        setShowError(false);
 
         try {
-            const response = await axios.post('http://localhost:8000/api/accounts/login/', {
-                username: username,
-                password: password,
-            });
-
-            console.log('Login successful:', response.data);
-            const token = response.data.token;
-            // Store the token in localStorage
-            localStorage.setItem('token', token);
-            // Redirect to loading page
-            navigate("/pre-onboarding");
+            console.log("Submitting login for:", username);
+            const result = await login(username, password);
+            
+            if (result.success) {
+                console.log("Login successful, redirecting");
+                navigate("/shop");
+            } else {
+                console.log("Login failed:", result.error);
+                setErrorMessage(result.error);
+                setShowError(true);
+            }
         } catch (error) {
             console.error('Login error:', error);
-            
-            // Extract error message directly from the backend response
-            if (error.response && error.response.data) {
-                if (error.response.data.non_field_errors) {
-                    // Use the message directly from the backend
-                    setErrorMessage(error.response.data.non_field_errors[0]);
-                } else if (error.response.data.username) {
-                    setErrorMessage(error.response.data.username[0]);
-                } else if (error.response.data.password) {
-                    setErrorMessage(error.response.data.password[0]);
-                } else {
-                    // Fallback error message
-                    setErrorMessage('Login failed. Please try again.');
-                }
-            } else {
-                // Network error fallback
-                setErrorMessage('Network error. Please check your connection and try again.');
-            }
-            
-            // Show error modal
+            setErrorMessage('An unexpected error occurred');
             setShowError(true);
         } finally {
             setIsLoading(false);

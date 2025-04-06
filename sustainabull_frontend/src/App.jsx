@@ -10,6 +10,7 @@ import TransportationMode from './map/TransportationMode';
 import InputDestination from './map/InputDestination';
 import OngoingTrip from './map/OngoingTrip';
 import Shop from './shop/Shop';
+import FAQ from './faq/FAQ';
 import Leaderboard from './leaderboard/Leaderboard';
 import Inventory from './inventory/Inventory';
 import Map from './map/TransportationMode';
@@ -33,6 +34,7 @@ function App() {
         <Route path="/ongoing-trip" element={<OngoingTrip/>} />
         <Route path="/trip-rewards" element={<TripRewards/>} />
         <Route path="/shop" element={<Shop/>} />
+        <Route path="/faq" element={<FAQ/>} />
         <Route path="/leaderboard" element={<Leaderboard/>} />
         <Route path="/inventory" element={<Inventory/>} />
         <Route path="/map" element={<Map/>} />

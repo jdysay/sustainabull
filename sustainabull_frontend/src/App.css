@@ -38,3 +38,19 @@
   .read-the-docs {
     color: #888;
   }
+
+  @font-face {
+    font-family: 'Micro5';
+    src: url('/src/assets/fonts/Micro5.woff2') format('woff2'),
+         url('/src/assets/fonts/Micro5.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  /* Fallback retro pixel font from Google Fonts */
+  @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+  .font-micro5 {
+    font-family: 'Micro5', 'Press Start 2P', monospace;
+  }

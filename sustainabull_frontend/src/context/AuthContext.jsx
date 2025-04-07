@@ -56,9 +56,15 @@ export const AuthProvider = ({ children }) => {
       setError(null);
       
       // Step 1: Login to get token
+      // Adding content-type header and ensuring data is formatted correctly
       const response = await axios.post(
         'http://localhost:8000/api/accounts/login/',
-        { username, password }
+        { username, password },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        }
       );
       
       const { token } = response.data;
@@ -83,8 +89,16 @@ export const AuthProvider = ({ children }) => {
       
       return { success: true };
     } catch (error) {
+      console.error("Login error details:", error.response?.data);
       setError(error.response?.data?.non_field_errors?.[0] || "Login failed");
-      return { success: false, error: error.response?.data || "Login failed" };
+      return { 
+        success: false, 
+        error: error.response?.data?.non_field_errors?.[0] || 
+               error.response?.data?.detail || 
+               "Login failed", 
+        statusCode: error.response?.status,
+        response: error.response?.data
+      };
     } finally {
       setLoading(false);
     }

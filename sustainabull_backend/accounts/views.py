@@ -11,6 +11,12 @@ from django.db.models import F
 
 class RegisterView(generics.CreateAPIView):
     serializer_class = RegisterSerializer
+    
+    def perform_create(self, serializer):
+        user = serializer.save()
+        # Explicitly set gold to ensure the default is applied
+        user.gold = 100  # Default starting gold
+        user.save()
 
 class LoginView(APIView):
     def post(self, request):

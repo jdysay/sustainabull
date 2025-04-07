@@ -1,3 +1,6 @@
+/* Fallback retro pixel font from Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
 #root {
     /* Remove max-width, margin, and padding */
     text-align: center;
@@ -47,9 +50,6 @@
     font-style: normal;
     font-display: swap;
   }
-
-  /* Fallback retro pixel font from Google Fonts */
-  @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 
   .font-micro5 {
     font-family: 'Micro5', 'Press Start 2P', monospace;

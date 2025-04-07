@@ -1,6 +1,7 @@
 from pathlib import Path
 from urllib import request
 from dotenv import load_dotenv
+import requests  # Correct import for the requests library
 from django.http import JsonResponse
 import os
 
@@ -128,11 +129,11 @@ WSGI_APPLICATION = 'sustainabull_backend.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'sustainabull',
-        'USER': 'postgres',  # adminからpostgresに変更
-        'PASSWORD': 'postgres',  # passwordからpostgresに変更
-        'HOST': 'db',
-        'PORT': '5432',
+        'NAME': os.getenv('POSTGRES_DB', 'sustainabull'),
+        'USER': os.getenv('POSTGRES_USER', 'admin'),
+        'PASSWORD': os.getenv('POSTGRES_PASSWORD', 'password'),
+        'HOST': os.getenv('POSTGRES_HOST', 'db'),
+        'PORT': os.getenv('POSTGRES_PORT', '5432'),
     }
 }
 

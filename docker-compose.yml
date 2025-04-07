@@ -2,28 +2,39 @@ services:
   db:
     image: postgres:15
     environment:
-      - POSTGRES_DB=sustainabull
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-    volumes:
-      - postgres_data:/var/lib/postgresql/data/
-      - ./initdb:/docker-entrypoint-initdb.d
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: sustainabull
     ports:
       - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d sustainabull"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   backend:
     build: ./sustainabull_backend
     container_name: sustainabull_backend
     restart: always
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     environment:
-      DATABASE_URL: postgres://postgres:postgres@db:5432/sustainabull
+      DATABASE_URL: postgres://admin:password@db:5432/sustainabull
+      DJANGO_SETTINGS_MODULE: sustainabull_backend.settings
     ports:
       - "8000:8000"
     volumes:
       - ./sustainabull_backend:/app
       - backend_venv:/venv
+    command: >
+      sh -c "
+        /venv/bin/python manage.py migrate --noinput &&
+        /venv/bin/python manage.py runserver 0.0.0.0:8000
+      "
 
   frontend:
     platform: linux/arm64
@@ -39,5 +50,5 @@ services:
       # - /app/node_modules
 
 volumes:
-  postgres_data:
+  db_data:
   backend_venv:

@@ -31,6 +31,10 @@ function LoginPage() {
 
         try {
             console.log("Submitting login for:", username);
+            
+            // Add detailed logging of the request before sending
+            console.log("Login request data:", { username, password: "***" });
+            
             const result = await login(username, password);
             
             if (result.success) {
@@ -38,12 +42,30 @@ function LoginPage() {
                 navigate("/shop");
             } else {
                 console.log("Login failed:", result.error);
-                setErrorMessage(result.error);
+                // Log more details about the error if available
+                if (result.statusCode) {
+                    console.log("Status code:", result.statusCode);
+                }
+                if (result.response) {
+                    console.log("Response data:", result.response);
+                }
+                setErrorMessage(result.error || "Login failed. Please check your credentials.");
                 setShowError(true);
             }
         } catch (error) {
             console.error('Login error:', error);
-            setErrorMessage('An unexpected error occurred');
+            // Add more detailed error logging
+            if (error.response) {
+                console.error('Error response:', error.response.data);
+                console.error('Status code:', error.response.status);
+                setErrorMessage(error.response.data?.detail || 'Server error: ' + error.response.status);
+            } else if (error.request) {
+                console.error('No response received:', error.request);
+                setErrorMessage('No response from server. Please try again later.');
+            } else {
+                console.error('Error message:', error.message);
+                setErrorMessage('An unexpected error occurred: ' + error.message);
+            }
             setShowError(true);
         } finally {
             setIsLoading(false);

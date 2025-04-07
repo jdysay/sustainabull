@@ -12,6 +12,15 @@ const CowFarm = () => {
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [cowName, setCowName] = useState('');
 
+  const globalFontStyle = {
+    fontFamily: "'Micro5', 'Press Start 2P', monospace"
+  };
+  
+  const cowNameStyle = {
+    ...globalFontStyle,
+    fontSize: '24px'
+  };
+
   useEffect(() => {
     fetchCow();
   }, [user]);
@@ -83,7 +92,7 @@ const CowFarm = () => {
   }
 
   return (
-    <div className="flex flex-col min-h-screen bg-gradient-to-b from-blue-100 to-blue-300 font-mono">
+    <div className="flex flex-col min-h-screen bg-gradient-to-b from-blue-100 to-blue-300" style={globalFontStyle}>
       <div className="max-w-4xl mx-auto p-6 w-full">
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold text-center">MY COW</h1>
@@ -139,7 +148,15 @@ const CowFarm = () => {
                 />
               </div>
               <div className="flex-grow">
-                <h2 className="text-2xl font-bold mb-2">{cow.cow_name}</h2>
+                {/* Styled cow name in a box, matching Home.jsx */}
+                <div className="text-center mb-4">
+                  <div className="inline-block bg-white border-2 border-[#3774AD] rounded-lg px-4 py-2">
+                    <div className="text-[#3774AD] font-bold" style={cowNameStyle}>
+                      {cow.cow_name}
+                    </div>
+                  </div>
+                </div>
+
                 <div className="grid grid-cols-2 gap-4 mb-4">
                   <div>
                     <p className="text-gray-700">Level: {cow.cow_level}</p>
@@ -147,56 +164,80 @@ const CowFarm = () => {
                   </div>
                 </div>
 
-                <div className="space-y-3">
-                  <div>
-                    <div className="flex justify-between mb-1">
-                      <span className="text-sm font-medium">Hunger</span>
-                      <span className="text-sm font-medium">{cow.hunger}%</span>
+                <div className="space-y-6">
+                  {/* Hunger stat - updated to match Home.jsx exactly */}
+                  <div className="flex items-center">
+                    <div className="w-20 text-center mr-4">
+                      <div className="text-sm font-medium text-gray-700 mb-1">Hunger</div>
+                      <div className="px-2 py-0.5 rounded-full text-xs font-bold text-white inline-block"
+                        style={{ backgroundColor: "#FDDB3A", ...globalFontStyle }}>
+                        {cow.hunger || 50}%
+                      </div>
                     </div>
-                    <div className="w-full bg-gray-200 rounded-full h-2.5">
-                      <div 
-                        className="bg-green-600 h-2.5 rounded-full" 
-                        style={{ width: `${cow.hunger}%` }}
-                      ></div>
-                    </div>
-                  </div>
-
-                  <div>
-                    <div className="flex justify-between mb-1">
-                      <span className="text-sm font-medium">Mood</span>
-                      <span className="text-sm font-medium">{cow.mood}%</span>
-                    </div>
-                    <div className="w-full bg-gray-200 rounded-full h-2.5">
-                      <div 
-                        className="bg-yellow-400 h-2.5 rounded-full" 
-                        style={{ width: `${cow.mood}%` }}
-                      ></div>
+                    <div className="flex-grow">
+                      <div className="w-full bg-gray-200 rounded-full h-4">
+                        <div 
+                          className="bg-[#FDDB3A] h-4 rounded-full" 
+                          style={{ width: `${cow.hunger || 50}%` }}
+                        ></div>
+                      </div>
                     </div>
                   </div>
 
-                  <div>
-                    <div className="flex justify-between mb-1">
-                      <span className="text-sm font-medium">CO2 Emissions</span>
-                      <span className="text-sm font-medium">{cow.co2_emissions}%</span>
+                  {/* Mood stat - updated to match Home.jsx exactly */}
+                  <div className="flex items-center">
+                    <div className="w-20 text-center mr-4">
+                      <div className="text-sm font-medium text-gray-700 mb-1">Mood</div>
+                      <div className="px-2 py-0.5 rounded-full text-xs font-bold text-white inline-block"
+                        style={{ backgroundColor: "#FF6B6B", ...globalFontStyle }}>
+                        {cow.mood || 50}%
+                      </div>
                     </div>
-                    <div className="w-full bg-gray-200 rounded-full h-2.5">
-                      <div 
-                        className="bg-red-500 h-2.5 rounded-full" 
-                        style={{ width: `${cow.co2_emissions}%` }}
-                      ></div>
+                    <div className="flex-grow">
+                      <div className="w-full bg-gray-200 rounded-full h-4">
+                        <div 
+                          className="bg-[#FF6B6B] h-4 rounded-full" 
+                          style={{ width: `${cow.mood || 50}%` }}
+                        ></div>
+                      </div>
                     </div>
                   </div>
 
-                  <div>
-                    <div className="flex justify-between mb-1">
-                      <span className="text-sm font-medium">Exercise</span>
-                      <span className="text-sm font-medium">{cow.exercise}%</span>
+                  {/* Poop (CO2 Emissions) stat - updated to match Home.jsx exactly */}
+                  <div className="flex items-center">
+                    <div className="w-20 text-center mr-4">
+                      <div className="text-sm font-medium text-gray-700 mb-1">Poop</div>
+                      <div className="px-2 py-0.5 rounded-full text-xs font-bold text-white inline-block"
+                        style={{ backgroundColor: "#8B4513", ...globalFontStyle }}>
+                        {cow.co2_emissions || 50}%
+                      </div>
                     </div>
-                    <div className="w-full bg-gray-200 rounded-full h-2.5">
-                      <div 
-                        className="bg-blue-500 h-2.5 rounded-full" 
-                        style={{ width: `${cow.exercise}%` }}
-                      ></div>
+                    <div className="flex-grow">
+                      <div className="w-full bg-gray-200 rounded-full h-4">
+                        <div 
+                          className="bg-[#8B4513] h-4 rounded-full" 
+                          style={{ width: `${cow.co2_emissions || 50}%` }}
+                        ></div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Exercise stat - updated to match Home.jsx exactly */}
+                  <div className="flex items-center">
+                    <div className="w-20 text-center mr-4">
+                      <div className="text-sm font-medium text-gray-700 mb-1">Walk</div>
+                      <div className="px-2 py-0.5 rounded-full text-xs font-bold text-white inline-block"
+                        style={{ backgroundColor: "#4ECDC4", ...globalFontStyle }}>
+                        {cow.exercise || 50}%
+                      </div>
+                    </div>
+                    <div className="flex-grow">
+                      <div className="w-full bg-gray-200 rounded-full h-4">
+                        <div 
+                          className="bg-[#4ECDC4] h-4 rounded-full" 
+                          style={{ width: `${cow.exercise || 50}%` }}
+                        ></div>
+                      </div>
                     </div>
                   </div>
                 </div>

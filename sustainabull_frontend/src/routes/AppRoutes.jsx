@@ -19,6 +19,7 @@ import Map from '../map/TransportationMode';
 import TripRewards from '../map/TripRewards';
 import CowDetails from '../farm/CowDetails';
 import CowFarm from '../farm/CowFarm';
+import FAQ from '../faq/FAQ'; // Import the FAQ component
 
 // Root route to handle initial navigation
 const Root = () => {
@@ -118,6 +119,7 @@ const AppRoutes = () => {
         <Route path="/farm" element={<CowFarm />} />
         <Route path="/cow-details" element={<CowDetails />} />
         <Route path="/cow/:id" element={<CowDetails />} />
+        <Route path="/faq" element={<FAQ />} /> {/* Add FAQ route */}
       </Route>
       
       {/* Fallback for unknown routes */}

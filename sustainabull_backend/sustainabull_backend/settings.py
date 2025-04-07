@@ -4,6 +4,8 @@ from dotenv import load_dotenv
 from django.http import JsonResponse
 import os
 
+import requests
+
 load_dotenv()
 
 ORS_API_KEY = os.getenv("ORS_API_KEY")
@@ -122,10 +124,15 @@ WSGI_APPLICATION = 'sustainabull_backend.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'sustainabull',
+        'USER': 'postgres',  # adminからpostgresに変更
+        'PASSWORD': 'postgres',  # passwordからpostgresに変更
+        'HOST': 'db',
+        'PORT': '5432',
     }
 }
 

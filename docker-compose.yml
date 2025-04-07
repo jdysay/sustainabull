@@ -1,17 +1,15 @@
 services:
   db:
     image: postgres:15
-    container_name: sustainabull_db
-    restart: always
     environment:
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: sustainabull
+      - POSTGRES_DB=sustainabull
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+      - ./initdb:/docker-entrypoint-initdb.d
     ports:
       - "5432:5432"
-    volumes:
-      - db_data:/var/lib/postgresql/data
-      - ./initdb:/docker-entrypoint-initdb.d
 
   backend:
     build: ./sustainabull_backend
@@ -20,7 +18,7 @@ services:
     depends_on:
       - db
     environment:
-      DATABASE_URL: postgres://admin:password@db:5432/sustainabull
+      DATABASE_URL: postgres://postgres:postgres@db:5432/sustainabull
     ports:
       - "8000:8000"
     volumes:
@@ -41,5 +39,5 @@ services:
       # - /app/node_modules
 
 volumes:
-  db_data:
+  postgres_data:
   backend_venv:

@@ -191,3 +191,4 @@ class TransportationLog(models.Model):
     
     def __str__(self):
         return f"{self.cow.cow_name} traveled {self.distance_meters}m by {self.transport_type}"
+

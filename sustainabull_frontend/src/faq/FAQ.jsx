@@ -29,7 +29,7 @@ const FAQ = () => {
       {
         id: 'b2',
         question: "How do I navigate the game?",
-        answer: "Use the navigation buttons at the top and bottom of each screen. Shop (buy items), Leaderboard (view other users' progress), FAQ(view general help), Inventory (use items), Map (Begin trip), Cow Farm (view all cows).",
+        answer: "Use the navigation buttons at the top and bottom of each screen. Shop (buy items), FAQ(view general help), Inventory (use items), Map (Begin trip), Cow Farm (view all cows).",
         tags: ['navigation', 'ui']
       },
       {

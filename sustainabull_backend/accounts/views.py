@@ -1,74 +1,76 @@
-from rest_framework import generics, status
-from .serializers import RegisterSerializer, LoginSerializer
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework.authtoken.models import Token
+from django.shortcuts import render
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from rest_framework import status
+from rest_framework.authtoken.models import Token
+from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
-from .models import User  # Adjust based on your actual model
-from django.db.models import F
-
-class RegisterView(generics.CreateAPIView):
-    serializer_class = RegisterSerializer
-    
-    def perform_create(self, serializer):
-        user = serializer.save()
-        # Explicitly set gold to ensure the default is applied
-        user.gold = 100  # Default starting gold
-        user.save()
 
 class LoginView(APIView):
     def post(self, request):
-        serializer = LoginSerializer(data=request.data)
-        if serializer.is_valid():
-            user = serializer.validated_data
-            token, created = Token.objects.get_or_create(user=user)
-            return Response({'token': token.key}, status=status.HTTP_200_OK)
+        username = request.data.get('username')
+        password = request.data.get('password')
+        
+        user = authenticate(username=username, password=password)
+        
+        if user:
+            token, _ = Token.objects.get_or_create(user=user)
+            return Response({'token': token.key})
         else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'non_field_errors': ['Unable to log in with provided credentials.']}, status=status.HTTP_400_BAD_REQUEST)
+
+class RegisterView(APIView):
+    def post(self, request):
+        username = request.data.get('username')
+        password = request.data.get('password')
+        email = request.data.get('email', '')
+        
+        if not username or not password:
+            return Response({'error': 'Username and password are required'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        if User.objects.filter(username=username).exists():
+            return Response({'error': 'Username already exists'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        user = User.objects.create_user(username=username, password=password, email=email)
+        user.gold = 100  # Starting gold for new users
+        user.save()
+        
+        token, _ = Token.objects.get_or_create(user=user)
+        return Response({'token': token.key}, status=status.HTTP_201_CREATED)
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def get_user_data(request):
+    """Get the current user's data"""
     user = request.user
-    profile = User.objects.get(user=user)
     
+    # The error is here - we don't need to query for the user when we already have it
+    # Fix: Just return the user data without querying
     return Response({
         'id': user.id,
         'username': user.username,
-        'gold': profile.gold,
-        # Other user data you want to include
+        'email': user.email,
+        'gold': getattr(user, 'gold', 0)  # Safe access to gold attribute
     })
 
 @api_view(['PATCH'])
 @permission_classes([IsAuthenticated])
 def update_gold(request):
-    """Update the user's gold amount"""
-    if 'gold' not in request.data:
-        return Response({'error': 'Gold amount is required'}, status=status.HTTP_400_BAD_REQUEST)
-    
-    user = request.user
-    
+    """Update user's gold amount"""
     try:
-        # Instead of accessing profile, update the user object directly
-        # Most likely you're storing gold directly on the user model or using a custom user model
+        new_gold = request.data.get('gold')
+        if new_gold is None:
+            return Response({'error': 'Gold amount is required'}, status=status.HTTP_400_BAD_REQUEST)
         
-        # If gold is stored directly on the User model:
-        user.gold = float(request.data['gold'])
+        user = request.user
+        user.gold = new_gold
         user.save()
-        
-        # If you're using a UserProfile model with a one-to-one relationship:
-        # user.userprofile.gold = float(request.data['gold'])
-        # user.userprofile.save()
         
         return Response({
             'success': True,
-            'gold': user.gold,
-            'username': user.username,
-            'id': user.id
+            'gold': user.gold
         })
-    except (ValueError, TypeError):
-        return Response({'error': 'Invalid gold amount'}, status=status.HTTP_400_BAD_REQUEST)
     except Exception as e:
         return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

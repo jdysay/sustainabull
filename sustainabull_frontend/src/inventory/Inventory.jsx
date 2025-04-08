@@ -11,43 +11,68 @@ const Inventory = () => {
   const [error, setError] = useState('');
   const [feedResult, setFeedResult] = useState(null);
   const [feedbackMessage, setFeedbackMessage] = useState('');
+  const [allItems, setAllItems] = useState([]); // Store all item data
 
-  // Fetch user's inventory when component mounts
+  // Fetch user's inventory and all items when component mounts
   useEffect(() => {
-    fetchInventory();
+    if (user) {
+      fetchData();
+    } else {
+      setIsLoading(false);
+    }
   }, [user]);
 
-  const fetchInventory = async () => {
-    if (!user) return;
-
+  const fetchData = async () => {
+    setIsLoading(true);
     try {
       const token = localStorage.getItem('token');
-
       if (!token) {
         setError('Authentication error. Please log in again.');
         setIsLoading(false);
         return;
       }
 
-      const response = await axios.get(
+      // First get all items for reference
+      const itemsResponse = await axios.get(
+        'http://localhost:8000/api/shop/items/',
+        { headers: { 'Authorization': `Token ${token}` } }
+      );
+      setAllItems(itemsResponse.data);
+      console.log("All available items:", itemsResponse.data);
+
+      // Then get user's inventory
+      const inventoryResponse = await axios.get(
         'http://localhost:8000/api/shop/inventory/',
-        {
-          headers: {
-            'Authorization': `Token ${token}`,
-            'Content-Type': 'application/json'
-          }
-        }
+        { headers: { 'Authorization': `Token ${token}` } }
       );
 
-      console.log("Inventory API response:", response.data);
+      console.log("Raw inventory response:", inventoryResponse.data);
 
+      // Enhance inventory items with full item details
+      const enhancedInventory = inventoryResponse.data.map(invItem => {
+        const itemDetails = itemsResponse.data.find(item => item.id === invItem.item);
+        return {
+          ...invItem,
+          item_details: itemDetails || {
+            name: `Item #${invItem.item}`,
+            description: "Item details not available",
+            image: null
+          }
+        };
+      });
+
+      console.log("Enhanced inventory:", enhancedInventory);
+      
       // Filter out items with quantity 0
-      const userItems = response.data.filter(item => item.quantity > 0);
-      console.log("Filtered user inventory:", userItems);
+      const userItems = enhancedInventory.filter(item => item.quantity > 0);
       setInventory(userItems);
     } catch (error) {
-      console.error("Error fetching inventory:", error);
-      setError('Failed to load your inventory. Please try again later.');
+      console.error("Error fetching data:", error);
+      if (error.response?.status === 404) {
+        setError('Inventory service is not available. Please try again later.');
+      } else {
+        setError('Failed to load your inventory. Please try again later.');
+      }
     } finally {
       setIsLoading(false);
     }
@@ -82,7 +107,7 @@ const Inventory = () => {
       setFeedbackMessage(`Successfully fed your cow with the item! Hunger increased by ${response.data.feed_result.increase}%`);
 
       // Update inventory
-      fetchInventory();
+      fetchData();
     } catch (error) {
       console.error("Error feeding cow:", error);
       setFeedbackMessage(error.response?.data?.error || 'Failed to feed your cow. Please try again.');
@@ -96,6 +121,35 @@ const Inventory = () => {
       </div>
     );
   }
+
+  // For debugging - add inventory to item directly
+  const debugAddItem = async (itemId, quantity) => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) return;
+      
+      const response = await axios.post(
+        'http://localhost:8000/api/shop/add-to-inventory/',
+        { 
+          item_id: itemId,
+          quantity: quantity 
+        },
+        { 
+          headers: { 
+            'Authorization': `Token ${token}`,
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+      
+      console.log(`Added ${quantity} of item #${itemId} to inventory:`, response.data);
+      fetchData(); // Refresh inventory
+      setFeedbackMessage(`Added ${quantity} of item #${itemId} to your inventory!`);
+    } catch (error) {
+      console.error(`Error adding item to inventory:`, error);
+      setError('Failed to add item to inventory');
+    }
+  };
 
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-b from-blue-100 to-blue-300 font-mono">
@@ -128,12 +182,39 @@ const Inventory = () => {
           <div className="text-center py-8 bg-white rounded-lg shadow-md">
             <h2 className="text-2xl font-semibold mb-4">Your inventory is empty</h2>
             <p className="mb-6">Visit the shop to purchase items!</p>
-            <Link
-              to="/shop"
-              className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-6 rounded"
-            >
-              Go to Shop
-            </Link>
+            <div className="space-y-4">
+              <Link
+                to="/shop"
+                className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-6 rounded block max-w-xs mx-auto"
+              >
+                Go to Shop
+              </Link>
+              
+              {/* Debug button to add corn chunks directly */}
+              <button
+                onClick={() => debugAddItem(4, 5)}
+                className="bg-green-500 hover:bg-green-600 text-white py-2 px-6 rounded block max-w-xs mx-auto"
+              >
+                Debug: Add 5 Corn Chunks
+              </button>
+              
+              {allItems.length > 0 && (
+                <div className="mt-8 p-4">
+                  <h3 className="font-bold mb-2">Debug: Add Available Items</h3>
+                  <div className="flex flex-wrap gap-2 justify-center">
+                    {allItems.map(item => (
+                      <button
+                        key={item.id}
+                        onClick={() => debugAddItem(item.id, 1)}
+                        className="bg-gray-200 hover:bg-gray-300 py-1 px-3 rounded text-sm"
+                      >
+                        Add {item.name}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -155,7 +236,7 @@ const Inventory = () => {
                 <div className="mt-auto">
                   <div className="flex justify-between items-center mb-3">
                     <span className="font-bold">Quantity:</span>
-                    <span className="bg-gray-100 px-3 py-1 rounded-full">{item.quantity}</span>
+                    <span className="bg-gray-100 px-3 py-1 rounded-full text-black">{item.quantity}</span>
                   </div>
                   <button
                     onClick={() => feedCow(item.item, 1)}

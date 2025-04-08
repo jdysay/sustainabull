@@ -3,19 +3,19 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { MapContainer, TileLayer, Marker, Polyline } from 'react-leaflet';
 import L from 'leaflet';
 import polyline from 'polyline';
-
-
+import axios from 'axios';
+import { useAuth } from '../context/AuthContext';
 
 export default function TripRewards() {
   const navigate = useNavigate();
   const location = useLocation();
+  const { user, updateGold } = useAuth();
   const [setDistanceLeft] = useState(null);
   const [route, setRoute] = useState(null);
-  const [totalDistance, setTotalDistance] = useState(null);
+  const [totalDistance, setTotalDistance] = useState(5000); // Default to 5km for testing
+  const [rewardsApplied, setRewardsApplied] = useState(false);
   const selectedMode = location.state?.selectedMode || "Walk"; // default is walk
   const { startLocation = [0, 0], endLocation = [0, 0] } = location.state || {};
-  
-
 
   // test coordinates
   // const startLocation = [49.276291, -122.909554]; 
@@ -32,13 +32,14 @@ export default function TripRewards() {
       return;
     }
   
-    const url = `http://127.0.0.1:8000/api/routes/get-route/?start_lat=${startLocation[0]}&start_lng=${startLocation[1]}&end_lat=${endLocation[0]}&end_lng=${endLocation[1]}`;
+    const url = `http://localhost:8000/api/routes/get-route/?start_lat=${startLocation[0]}&start_lng=${startLocation[1]}&end_lat=${endLocation[0]}&end_lng=${endLocation[1]}`;
   
     try {
       const response = await fetch(url);
   
       if (!response.ok) {
         console.error("Failed to fetch route:", response.statusText);
+        // If we can't fetch the route, just use the default distance for testing
         return;
       }
   
@@ -88,10 +89,157 @@ export default function TripRewards() {
 
   const rewards = calculateRewards();
 
+  // Function to update the user's gold
+  const updateUserGold = async (coinsToAdd) => {
+    try {
+      if (!user) {
+        console.error("No user found");
+        return false;
+      }
+
+      const token = localStorage.getItem('token');
+      if (!token) {
+        console.error("No token found");
+        return false;
+      }
+
+      // Get current user data to get the current gold amount
+      const userResponse = await axios.get(
+        'http://localhost:8000/api/accounts/user/',
+        { headers: { 'Authorization': `Token ${token}` } }
+      );
+
+      const currentGold = userResponse.data.gold || 0;
+      const newGold = currentGold + coinsToAdd;
+
+      // Update gold in database
+      const updateResponse = await axios.patch(
+        'http://localhost:8000/api/accounts/update-gold/',
+        { gold: newGold },
+        { headers: { 'Authorization': `Token ${token}` } }
+      );
+
+      if (updateResponse.data.success) {
+        // Update local state with updateGold function from context
+        updateGold(newGold);
+        console.log(`Gold updated from ${currentGold} to ${newGold}`);
+        return true;
+      } else {
+        console.error("Failed to update gold:", updateResponse.data);
+        return false;
+      }
+    } catch (error) {
+      console.error("Error updating gold:", error);
+      return false;
+    }
+  };
+
+  // Function to add food to user's inventory
+  const addFoodToInventory = async (foodName, quantity) => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        console.error("No token found");
+        return false;
+      }
+
+      // Use hardcoded "4" for corn chunks
+      const response = await axios.post(
+        'http://localhost:8000/api/shop/add-to-inventory/',
+        { 
+          item_id: 4, // Hardcoding corn chunks ID to 4
+          quantity: quantity 
+        },
+        { 
+          headers: { 
+            'Authorization': `Token ${token}`,
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+
+      console.log(`Added ${quantity} ${foodName} to inventory:`, response.data);
+      return true;
+    } catch (error) {
+      console.error(`Error adding ${foodName} to inventory:`, error);
+      return false;
+    }
+  };
+
+  // Function to update cow stats based on travel
+  const updateCowStats = async (distance, mode) => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        console.error("No token found");
+        return false;
+      }
+
+      // Map the frontend mode to backend transport_type
+      const transportTypeMap = {
+        'Walk': 'walk',
+        'Bike': 'bike',
+        'Transit': 'transit',
+        'Drive': 'vehicle',
+        'Drive (electric vehicle)': 'vehicle'
+      };
+
+      const transportType = transportTypeMap[mode] || 'walk';
+
+      // Update cow stats via travel endpoint
+      const response = await axios.post(
+        'http://localhost:8000/api/shop/travel/',
+        {
+          distance_meters: Math.round(distance),
+          transport_type: transportType
+        },
+        {
+          headers: {
+            'Authorization': `Token ${token}`,
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+
+      console.log(`Updated cow stats for ${distance}m ${mode} travel:`, response.data);
+      return true;
+    } catch (error) {
+      console.error("Error updating cow stats:", error);
+      return false;
+    }
+  };
+
+  // Apply all rewards to backend
+  const applyRewards = async () => {
+    if (rewardsApplied || !totalDistance) return;
+    
+    try {
+      // 1. Update user's gold
+      await updateUserGold(rewards.coins);
+      
+      // 2. Add food to inventory
+      const foodQuantity = parseInt(rewards.food.split(' ')[0]); // 20 from "20 corn chunks"
+      await addFoodToInventory("corn chunks", foodQuantity);
+      
+      // 3. Update cow stats
+      await updateCowStats(totalDistance, selectedMode);
+      
+      setRewardsApplied(true);
+    } catch (error) {
+      console.error("Error applying rewards:", error);
+    }
+  };
+
   useEffect(() => {
     fetchRoute();
   }, []); 
-
+  
+  // Apply rewards when distance is available
+  useEffect(() => {
+    if (totalDistance && !rewardsApplied) {
+      applyRewards();
+    }
+  }, [totalDistance]);
 
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center p-4">
@@ -99,7 +247,6 @@ export default function TripRewards() {
 
       <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-md">
         <div className="space-y-4">
-
           <div className="w-full h-64 relative">
             <MapContainer center={startLocation} zoom={13} className="h-full w-full z-10">
               <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
@@ -112,6 +259,7 @@ export default function TripRewards() {
 
           <div className="text-center">
             <p className="text-2xl font-bold text-custom-orange-dark mb-5">Rewards</p>
+            
             <p className="text-lg font-semibold text-custom-orange-dark">Total Distance</p>
             <p className="text-custom-orange mb-2"> {totalDistance !== null ? `${(totalDistance / 1000).toFixed(2)} km` : "Loading..."}</p>
             <p className="text-lg font-semibold text-custom-orange-dark">Points Earned</p>
@@ -123,12 +271,22 @@ export default function TripRewards() {
           </div>
         </div>
 
-        <button
-          onClick={() => navigate('/transportation-mode')}
-          className="mt-6 w-full bg-custom-orange-dark text-white py-2 px-4 rounded-lg hover:bg-custom-orange transition block border-none text-center"
-        >
-          Next
-        </button>
+        {/* Buttons container with flex layout */}
+        <div className="mt-6 flex flex-col sm:flex-row gap-3">
+          <button
+            onClick={() => navigate('/transportation-mode')}
+            className="flex-1 bg-custom-orange-dark text-white py-2 px-4 rounded-lg hover:bg-custom-orange transition block border-none text-center"
+          >
+            Start New Trip
+          </button>
+          
+          <button
+            onClick={() => navigate('/home')}
+            className="flex-1 bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition block border-none text-center"
+          >
+            Back to Home
+          </button>
+        </div>
       </div>
     </div>
   );

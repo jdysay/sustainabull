@@ -10,39 +10,74 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Load user from localStorage on mount
+  // Improved initialization to better persist state
   useEffect(() => {
     const initializeAuth = async () => {
       console.log("Initializing auth context");
-      const token = localStorage.getItem('token');
-      console.log("Stored token:", token);
+      setLoading(true);
       
-      if (token) {
+      try {
+        // First check if we have a token
+        const token = localStorage.getItem('token');
+        console.log("Stored token:", token ? "Found" : "Not found");
+        
+        // Also check if we have cached user data
+        const cachedUserData = localStorage.getItem('userData');
+        
+        if (!token) {
+          console.log("No authentication token found");
+          setUser(null);
+          setLoading(false);
+          return;
+        }
+        
+        // If we have cached user data and token, use it immediately to prevent loading state
+        if (cachedUserData) {
+          try {
+            const parsedUser = JSON.parse(cachedUserData);
+            setUser(parsedUser);
+            console.log("Using cached user data:", parsedUser);
+          } catch (e) {
+            console.error("Error parsing cached user data:", e);
+            // Invalid cache, will be overwritten by API call below
+          }
+        }
+        
+        // Always fetch fresh user data with the token
         try {
-          // Try to get user data with the token
           const response = await axios.get('http://localhost:8000/api/accounts/user/', {
             headers: {
               'Authorization': `Token ${token}`
             }
           });
           
+          // Update state and cache
           setUser(response.data);
-          console.log("User authenticated:", response.data);
+          localStorage.setItem('userData', JSON.stringify(response.data));
+          console.log("Fresh user data fetched:", response.data);
         } catch (error) {
-          console.error("Auth error:", error);
+          console.error("Error fetching user data:", error);
           
-          // Don't clear the token on server errors (500)
-          if (!error.response || error.response.status !== 500) {
-            localStorage.removeItem('token');
+          // If we have cached data, keep using it even if the refresh failed
+          if (!user && cachedUserData) {
+            try {
+              setUser(JSON.parse(cachedUserData));
+              console.log("Continuing with cached user data after fetch failure");
+            } catch (e) {
+              console.error("Invalid cached user data:", e);
+            }
           }
           
-          setUser(null);
-        } finally {
-          setLoading(false);
+          // Only clear data if it's an authentication error
+          if (error.response && error.response.status === 401) {
+            localStorage.removeItem('token');
+            localStorage.removeItem('userData');
+            setUser(null);
+          }
         }
-      } else {
-        console.log("No token found");
-        setUser(null);
+      } catch (e) {
+        console.error("Auth initialization error:", e);
+      } finally {
         setLoading(false);
       }
     };
@@ -56,7 +91,6 @@ export const AuthProvider = ({ children }) => {
       setError(null);
       
       // Step 1: Login to get token
-      // Adding content-type header and ensuring data is formatted correctly
       const response = await axios.post(
         'http://localhost:8000/api/accounts/login/',
         { username, password },
@@ -70,7 +104,7 @@ export const AuthProvider = ({ children }) => {
       const { token } = response.data;
       localStorage.setItem('token', token);
       
-      // Step 2: Get user data with the token (bypassing the 500 error)
+      // Step 2: Get user data with the token
       try {
         const userResponse = await axios.get(
           'http://localhost:8000/api/accounts/user/',
@@ -80,11 +114,15 @@ export const AuthProvider = ({ children }) => {
             }
           }
         );
+        // Store user data both in state and localStorage
         setUser(userResponse.data);
+        localStorage.setItem('userData', JSON.stringify(userResponse.data));
       } catch (userError) {
         console.log("Couldn't fetch user data, but login was successful");
         // On error, set minimal user data
-        setUser({ username });
+        const minimalUser = { username };
+        setUser(minimalUser);
+        localStorage.setItem('userData', JSON.stringify(minimalUser));
       }
       
       return { success: true };
@@ -125,17 +163,25 @@ export const AuthProvider = ({ children }) => {
 
   const logout = () => {
     localStorage.removeItem('token');
+    localStorage.removeItem('userData');
     setUser(null);
   };
 
   // Simple function to update gold without reloading user
-  const updateGold = (newAmount) => {
+  const updateGold = async (newAmount) => {
     if (user) {
-      setUser({
+      // Update local state immediately for responsive UI
+      const updatedUser = {
         ...user,
         gold: newAmount
-      });
+      };
+      setUser(updatedUser);
+      
+      // Update cached data
+      localStorage.setItem('userData', JSON.stringify(updatedUser));
+      return true;
     }
+    return false;
   };
 
   const contextValue = {

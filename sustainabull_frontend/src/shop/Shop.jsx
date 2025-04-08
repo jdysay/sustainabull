@@ -22,12 +22,19 @@ const Shop = () => {
     console.log("Shop auth check triggered");
     console.log("Loading:", loading, "User:", user);
     
-    // Only redirect if we're done loading and there's no user and no token
-    if (!loading && !user && !localStorage.getItem('token')) {
-      console.log("No auth detected, redirecting to login");
-      navigate('/login');
+    if (!loading) {
+      const token = localStorage.getItem('token');
+      const userData = localStorage.getItem('userData');
+      
+      // Only redirect if we're done loading AND there's no authentication data
+      if (!user && !token && !userData) {
+        console.log("No auth detected, redirecting to login");
+        navigate('/login');
+      } else {
+        console.log("Auth check passed");
+      }
     } else {
-      console.log("Auth check passed or still loading");
+      console.log("Still loading auth state");
     }
   }, [user, navigate, loading]);
 
